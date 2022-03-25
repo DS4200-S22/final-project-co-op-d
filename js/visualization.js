@@ -33,13 +33,19 @@ g_rating.append("text")
       d.rating = Number(d.rating)
     })
 
+    // data = data.filter((d) => d.company == "Wayfair LLC")
+
     const ratingMap = d3.rollup(data, v => v.length, d => d.rating);
 
     const ratings = [
       {"rating":1, "count":ratingMap.get(1)},
+      {"rating":1.5, "count":ratingMap.get(1.5)},
       {"rating":2, "count":ratingMap.get(2)},
+      {"rating":2.5, "count":ratingMap.get(2.5)},
       {"rating":3, "count":ratingMap.get(3)},
+      {"rating":3.5, "count":ratingMap.get(3.5)},
       {"rating":4, "count":ratingMap.get(4)},
+      {"rating":4.5, "count":ratingMap.get(4.5)},
       {"rating":5, "count":ratingMap.get(5)}];
   
     const x = d3.scaleBand()
@@ -106,10 +112,12 @@ g_pay.append("text")
       d.pay = Number(d.pay)
     })
 
+    // data = data.filter((d) => d.company == "Wayfair LLC")
+    
+
     const payMap = d3.rollup(data, v => v.length, d => d.pay);
     const compensations = [];
 
-    // console.log(payMap)
 
    for (const [key, value] of payMap) {
      let nonPaid = 0;
@@ -165,8 +173,6 @@ g_pay.append("text")
         {"pay":">50",   "count":over50});
    }
 
-   console.log(compensations)
-
     const x = d3.scaleBand()
       .domain(compensations.map(d => d.pay))
       .range([0, WIDTH]);
@@ -185,7 +191,6 @@ g_pay.append("text")
     g_pay.append("g")
         .attr("class", "y axis")
         .call(yAxisCall);
-  
   
     const rects =g_pay.selectAll("rect")
       .data(compensations);
