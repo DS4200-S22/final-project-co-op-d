@@ -97,7 +97,10 @@ d3.csv('data/coops.csv').then(data => {
 
   const mouseover = (event, d) => {
     tooltip.html(
-        `${ d[0].company }<br>Average Pay: $${ d.averagePay }<br>Average Rating: ${ d.averageRating }`)
+        `${ d[0].company }
+<br>Average Pay: $${ d.averagePay }
+<br>Average Rating: ${ d.averageRating }
+<br>Number of Reviews: ${ d.length }`)
         .style('opacity', 1);
   };
 
