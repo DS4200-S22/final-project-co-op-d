@@ -40,17 +40,20 @@ d3.csv('data/coops.csv').then(data => {
     d.company = String(d.company);
   });
 
+  data = data.filter((d) => d.isCoop == "TRUE")
+  data = data.filter((d) => d.isPayVisible == "TRUE")
+  data = data.filter((d) => d.pay > 15)
+
   const groupedByCompany = d3.group(data, d => d.company);
 
   // Finds Average Pay for each Company:
   groupedByCompany.forEach(group => {
     group.averagePay = d3.mean(group, d => d.pay);
+    group.averageRating = d3.mean(group, d => d.rating);
+    // group.visiblePayCount = d3.count(group, d => d.isPayVisible == "TRUE")
   });
 
-  // Finds Average Rating for each Company:
-  groupedByCompany.forEach(group => {
-    group.averageRating = d3.mean(group, d => d.rating);
-  });
+  // groupedByCompany = groupedByCompany.filter((group) => group.visiblePayCount > 3);
 
   const arrayOfAveragePay = [];
 
@@ -65,15 +68,16 @@ d3.csv('data/coops.csv').then(data => {
   });
 
   const maxPay = d3.max(arrayOfAveragePay);
+  const minPay = d3.min(arrayOfAveragePay);
 
   const maxRating = d3.max(arrayOfAverageRating);
 
   const x = d3.scaleLinear()
-      .domain([ 0, maxPay ])
+      .domain([ minPay, maxPay ])
       .range([ 0, WIDTH ]);
 
   const y = d3.scaleLinear()
-      .domain([ 0, maxRating ])
+      .domain([ 1, maxRating ])
       .range([ HEIGHT, 0 ]);
 
   const xAxisCall = d3.axisBottom(x);
@@ -120,7 +124,7 @@ d3.csv('data/coops.csv').then(data => {
       .append('circle')
       .attr('cx', d => x(d.averagePay))
       .attr('cy', d => y(d.averageRating))
-      .attr('r', 5)
+      .attr('r', d => d.length + 5)
       .attr('fill', '#69b3a2')
       .attr('stroke', 'black')
       .attr('stroke-width', '1px')
@@ -163,6 +167,7 @@ d3.csv('data/coops.csv').then(data => {
     d.rating = Number(d.rating);
   });
 
+  data = data.filter((d) => d.isCoop == "TRUE")
   // data = data.filter((d) => d.company == "Wayfair LLC")
 
   const ratingMap = d3.rollup(data, v => v.length, d => d.rating);
@@ -241,6 +246,7 @@ d3.csv('data/coops.csv').then(data => {
     d.pay = Number(d.pay);
   });
 
+  data = data.filter((d) => d.isCoop == "TRUE")
   // data = data.filter((d) => d.company == "Wayfair LLC")
 
   const payMap = d3.rollup(data, v => v.length, d => d.pay);
