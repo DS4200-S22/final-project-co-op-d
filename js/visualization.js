@@ -322,3 +322,46 @@ d3.csv('data/coops.csv').then(data => {
       .attr('fill', 'black');
 });
 
+// Location Distribution:
+const svg_loc = d3.select('#company-scatter-plot').append('svg')
+    .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
+    .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM);
+
+const g_loc = svg_loc.append('g')
+    .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+
+// X Label:
+g_loc.append('text')
+    .attr('class', 'x axis-label')
+    .attr('x', WIDTH / 2)
+    .attr('y', HEIGHT + 50)
+    .attr('font-size', '20px')
+    .attr('text-anchor', 'middle')
+    .text('Count');
+
+// Y Label
+g_loc.append('text')
+    .attr('class', 'y axis-label')
+    .attr('x', -(HEIGHT / 2))
+    .attr('y', -60)
+    .attr('font-size', '20px')
+    .attr('text-anchor', 'middle')
+    .attr('transform', 'rotate(-90)')
+    .text('Location');
+
+d3.csv('data/coops.csv').then(data => {
+  data.forEach(d => {
+    d.state = String(d.state);
+    d.nThCoop = Number(d.nThCoop);
+  });
+
+  const groupByStateNthCoop = d3.group(data, d => d.state, d => d.nThCoop);
+  const loc_counts = [];
+  for (const [key, value] of groupByStateNthCoop.entries()) {
+    // TODO
+  }
+  
+});
+  
+
+
