@@ -7,7 +7,10 @@ const yTooltipOffset = 10;
 
 const svg_company_scatter_plot = d3.select('#company-scatter-plot').append('svg')
     .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-    .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM);
+    .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
+    .style('background', '#fafafa')
+    .style('display', 'block')
+    .style('margin', 'auto');
 
 const g_company_scatter_plot = svg_company_scatter_plot.append('g')
     .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
@@ -40,10 +43,10 @@ d3.csv('data/coops.csv').then(data => {
     d.company = String(d.company);
   });
 
-  data = data.filter((d) => d.isCoop === 'TRUE');
+  data = data.filter(d => d.isCoop === 'TRUE');
   const globalData = JSON.parse(JSON.stringify(data)); // deep copy
   let tempData = globalData;
-  data = data.filter((d) => d.isPayVisible === 'TRUE' && d.pay > 15);
+  data = data.filter(d => d.isPayVisible === 'TRUE' && d.pay > 15);
 
   d3.select('#current-company').text('Currently Selected: All Companies');
 
@@ -120,24 +123,25 @@ d3.csv('data/coops.csv').then(data => {
     tooltip.style('opacity', 0);
   };
 
+  const updateBarGraphs = () => {
+    d3.select('#rating-distribution').select('svg').remove();
+    d3.select('#pay-distribution').select('svg').remove();
+    payDistribution();
+    ratingDistribution();
+  };
+
   /**
    * Sets globalData to only include the data for the selected company.
    */
   const mouseup = (event, company) => {
     tempData = globalData.filter(d => d.company === company[0].company);
-    d3.select('#rating-distribution').select('svg').remove();
-    d3.select('#pay-distribution').select('svg').remove();
-    payDistribution();
-    ratingDistribution();
+    updateBarGraphs();
     d3.select('#current-company').text(`Currently Selected: ${ company[0].company }`);
   };
 
   const resetBarGraphs = () => {
     tempData = globalData;
-    d3.select('#rating-distribution').select('svg').remove();
-    d3.select('#pay-distribution').select('svg').remove();
-    payDistribution();
-    ratingDistribution();
+    updateBarGraphs();
     d3.select('#current-company').text('Currently Selected: All Companies');
   };
 
@@ -163,9 +167,11 @@ d3.csv('data/coops.csv').then(data => {
 
   const ratingDistribution = () => {
     const svg_rating = d3.select('#rating-distribution').append('svg')
-        .attr('id', 'rating-distribution-svg')
         .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM);
+        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
+        .style('background', '#fafafa')
+        .style('display', 'block')
+        .style('margin', 'auto');
 
     const g_rating = svg_rating.append('g')
         .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
@@ -240,7 +246,10 @@ d3.csv('data/coops.csv').then(data => {
 
     const svg_pay = d3.select('#pay-distribution').append('svg')
         .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM);
+        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
+        .style('background', '#fafafa')
+        .style('display', 'block')
+        .style('margin', 'auto');
 
     const g_pay = svg_pay.append('g')
         .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
