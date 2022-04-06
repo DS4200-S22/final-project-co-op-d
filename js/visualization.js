@@ -158,6 +158,7 @@ d3.csv('data/coops.csv').then(data => {
       .attr('fill', '#69b3a2')
       .attr('stroke', 'black')
       .attr('stroke-width', '1px')
+      .style('cursor', 'pointer')
       .on('mouseover', mouseover)
       .on('mousemove', mousemove)
       .on('mouseleave', mouseleave)
