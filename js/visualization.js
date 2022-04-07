@@ -360,3 +360,121 @@ d3.csv('data/coops.csv').then(data => {
 
 
 
+// Location Distribution:
+const svg_loc = d3.select('#location-bars').append('svg')
+    .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
+    .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
+    
+    .style('display', 'block')
+    .style('margin', 'auto');
+
+const g_loc = svg_loc.append('g')
+  .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+
+// X Label:
+g_loc.append('text')
+    .attr('class', 'x axis-label')
+    .attr('x', WIDTH / 2)
+    .attr('y', HEIGHT + 50)
+    .attr('font-size', '15px')
+    .attr('text-anchor', 'middle')
+    .text('Count');
+
+var y_loc = d3.scaleBand()		
+    .rangeRound([0, HEIGHT])	
+    .paddingInner(0.05)
+    .align(0.1);
+
+var x_loc = d3.scaleLinear()		
+    .rangeRound([0, WIDTH]);	
+
+var z_loc = d3.scaleOrdinal()
+    .range(["#324c80", "#4e8032", "#ada547"]);
+
+d3.csv('data/coops.csv').then(data => {
+  data.forEach(d => {
+    d.state = String(d.state);
+    d.nThCoop = String(d.nThCoop);
+  });
+
+  const groupByStateNthCoop = d3.group(data, d => d.state, d => d.nThCoop);
+  const loc_d = [];
+  for (const [key, value] of groupByStateNthCoop.entries()) {
+    var dict = {};
+    dict.Location = key;
+    var currentLoc = value;
+    var locKeys = Array.from(currentLoc.keys()); 
+
+    // get value for the nth co-op
+    if (locKeys.includes('1')){
+      dict.First = currentLoc.get('1').length;
+    } else {
+      dict.First = 0;
+    }
+    if (locKeys.includes('2')){
+      dict.Second = currentLoc.get('2').length;
+    } else {
+      dict.Second = 0;
+    }
+    if (locKeys.includes('3')){
+      dict.Third = currentLoc.get('3').length;
+    } else {
+      dict.Third = 0;
+    }
+    dict.total = dict.First + dict.Second + dict.Third;
+    loc_d.push(dict);
+  }
+ 
+
+  var keys_loc = ["First", "Second", "Third"];
+
+  loc_d.sort(function(a, b) { return b.total - a.total; });
+  y_loc.domain(loc_d.map(function(d) { return d.Location; }));					
+  x_loc.domain([0, d3.max(loc_d, function(d) { return d.total; })]).nice();	
+  z_loc.domain(keys_loc);
+
+  g_loc.append("g")
+    .selectAll("g")
+    .data(d3.stack().keys(keys_loc)(loc_d))
+    .enter().append("g")
+      .attr("fill", function(d) { return z_loc(d.key); })
+    .selectAll("rect")
+    .data(function(d) { return d; })
+    .enter().append("rect")
+      .attr("y", function(d) { return y_loc(d.data.Location); })	  
+      .attr("x", function(d) { return x_loc(d[0]); })			   
+      .attr("width", function(d) { return x_loc(d[1]) - x_loc(d[0]); })	
+      .attr("height", y_loc.bandwidth());						   
+
+  g_loc.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0,0)") 					
+      .call(d3.axisLeft(y_loc));									
+
+  g_loc.append("g")
+      .attr("class", "axis")
+	  .attr("transform", "translate(0,"+HEIGHT+")")				
+      .call(d3.axisBottom(x_loc).ticks(null, "s"));   	
+
+  var legend_loc = g_loc.append("g")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", 10)
+      .attr("text-anchor", "end")
+    .selectAll("g")
+    .data(keys_loc.slice().reverse())
+    .enter().append("g")
+	 .attr("transform", function(d, i) { return "translate(-0," + (100 + i * 20) + ")"; });
+
+  legend_loc.append("rect")
+      .attr("x", WIDTH - 19)
+      .attr("width", 19)
+      .attr("height", 19)
+      .attr("fill", z_loc);
+
+  legend_loc.append("text")
+      .attr("x", WIDTH - 24)
+      .attr("y", 9.5)
+      .attr("dy", "0.32em")
+      .text(function(d) { return d; });
+  
+});
