@@ -55,23 +55,31 @@
 <!-- Visualization -->
 <h1>Visualization</h1>
 
-<div class='vis-holder' id="company-scatter-plot">
-    <h3>Company Scatterplot</h3>
+<div class="horizontal-container">
+    <div id="company-scatter-plot">
+        <h3>Company Scatterplot</h3>
+    </div>
+
+    <div class="pay-rating-container">
+    
+        <h2 id="current-company"></h2>
+        
+        <button type="button" id="reset-button">Reset</button>
+        
+        <div class="horizontal-container">
+            <div id="pay-distribution">
+                <h3>Pay Distribution</h3>
+            </div>
+            
+            <div id="rating-distribution">
+                <h3>Rating Distribution</h3>
+            </div>
+        </div>
+    </div>
 </div>
 
-<h2 class='vis-holder' id="current-company"></h2>
 
-<button type="button" id="reset-button">Reset</button>
-
-<div class='vis-holder' id="pay-distribution">
-    <h3>Pay Distribution</h3>
-</div>
-
-<div class='vis-holder' id="rating-distribution">
-    <h3>Rating Distribution</h3>
-</div>
-
-<div class='vis-holder' id="location-bars">
+<div id="location-bars">
     <h3>Location Graph</h3>
 </div>
 
