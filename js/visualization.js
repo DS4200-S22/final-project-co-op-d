@@ -1,6 +1,8 @@
 const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 130 };
 const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT;
 const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM;
+const WIDTH_S = 400 - MARGIN.LEFT - MARGIN.RIGHT;
+const HEIGHT_S = 300 - MARGIN.TOP - MARGIN.BOTTOM;
 const yTooltipOffset = 10;
 
 // Company Scatter Plot:
@@ -8,7 +10,6 @@ const yTooltipOffset = 10;
 const svg_company_scatter_plot = d3.select('#company-scatter-plot').append('svg')
     .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
     .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
-    .style('background', '#fafafa')
     .style('display', 'block')
     .style('margin', 'auto');
 
@@ -168,9 +169,8 @@ d3.csv('data/coops.csv').then(data => {
 
   const ratingDistribution = () => {
     const svg_rating = d3.select('#rating-distribution').append('svg')
-        .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
-        .style('background', '#fafafa')
+        .attr('width', WIDTH_S + MARGIN.LEFT + MARGIN.RIGHT)
+        .attr('height', HEIGHT_S + MARGIN.TOP + MARGIN.BOTTOM)
         .style('display', 'block')
         .style('margin', 'auto');
 
@@ -180,18 +180,18 @@ d3.csv('data/coops.csv').then(data => {
 // X Label
     g_rating.append('text')
         .attr('class', 'x axis-label')
-        .attr('x', WIDTH / 2)
-        .attr('y', HEIGHT + 50)
-        .attr('font-size', '20px')
+        .attr('x', WIDTH_S / 2)
+        .attr('y', HEIGHT_S + 40)
+        .attr('font-size', '15px')
         .attr('text-anchor', 'middle')
         .text('Stars');
 
 // Y label
     g_rating.append('text')
         .attr('class', 'y axis-label')
-        .attr('x', -(HEIGHT / 2))
-        .attr('y', -60)
-        .attr('font-size', '20px')
+        .attr('x', -(HEIGHT_S / 2))
+        .attr('y', -30)
+        .attr('font-size', '15px')
         .attr('text-anchor', 'middle')
         .attr('transform', 'rotate(-90)')
         .text('Count');
@@ -211,16 +211,16 @@ d3.csv('data/coops.csv').then(data => {
 
     const xRating = d3.scaleBand()
         .domain(ratings.map(d => d.rating))
-        .range([ 0, WIDTH ]);
+        .range([ 0, WIDTH_S ]);
 
     const yRating = d3.scaleLinear()
         .domain([ 0, d3.max(ratings, d => d.count) ])
-        .range([ HEIGHT, 0 ]);
+        .range([ HEIGHT_S, 0 ]);
 
     const xAxisCallRating = d3.axisBottom(xRating);
     g_rating.append('g')
         .attr('class', 'x axis')
-        .attr('transform', `translate(0, ${ HEIGHT })`)
+        .attr('transform', `translate(0, ${ HEIGHT_S })`)
         .call(xAxisCallRating);
 
     const yAxisCallRating = d3.axisLeft(yRating);
@@ -235,7 +235,7 @@ d3.csv('data/coops.csv').then(data => {
         .attr('y', d => yRating(d.count))
         .attr('x', d => xRating(d.rating))
         .attr('width', xRating.bandwidth)
-        .attr('height', d => HEIGHT - yRating(d.count))
+        .attr('height', d => HEIGHT_S - yRating(d.count))
         .attr('fill', 'black');
   };
 
@@ -246,9 +246,8 @@ d3.csv('data/coops.csv').then(data => {
   const payDistribution = () => {
 
     const svg_pay = d3.select('#pay-distribution').append('svg')
-        .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
-        .style('background', '#fafafa')
+        .attr('width', WIDTH_S + MARGIN.LEFT + MARGIN.RIGHT)
+        .attr('height', HEIGHT_S + MARGIN.TOP + MARGIN.BOTTOM)
         .style('display', 'block')
         .style('margin', 'auto');
 
@@ -258,18 +257,18 @@ d3.csv('data/coops.csv').then(data => {
 // X Label
     g_pay.append('text')
         .attr('class', 'x axis-label')
-        .attr('x', WIDTH / 2)
-        .attr('y', HEIGHT + 50)
-        .attr('font-size', '20px')
+        .attr('x', WIDTH_S / 2)
+        .attr('y', HEIGHT_S + 40)
+        .attr('font-size', '15px')
         .attr('text-anchor', 'middle')
         .text('Pay ($/hr)');
 
 // Y label
     g_pay.append('text')
         .attr('class', 'y axis-label')
-        .attr('x', -(HEIGHT / 2))
-        .attr('y', -60)
-        .attr('font-size', '20px')
+        .attr('x', -(HEIGHT_S / 2))
+        .attr('y', -30)
+        .attr('font-size', '15px')
         .attr('text-anchor', 'middle')
         .attr('transform', 'rotate(-90)')
         .text('Count');
@@ -325,16 +324,16 @@ d3.csv('data/coops.csv').then(data => {
 
     const xPay = d3.scaleBand()
         .domain(compensations.map(d => d.pay))
-        .range([ 0, WIDTH ]);
+        .range([ 0, WIDTH_S ]);
 
     const yPay = d3.scaleLinear()
         .domain([ 0, d3.max(compensations, d => d.count) ])
-        .range([ HEIGHT, 0 ]);
+        .range([ HEIGHT_S, 0 ]);
 
     const xAxisCallPay = d3.axisBottom(xPay);
     g_pay.append('g')
         .attr('class', 'x axis')
-        .attr('transform', `translate(0, ${ HEIGHT })`)
+        .attr('transform', `translate(0, ${ HEIGHT_S })`)
         .call(xAxisCallPay);
 
     const yAxisCallPay = d3.axisLeft(yPay);
@@ -349,7 +348,7 @@ d3.csv('data/coops.csv').then(data => {
         .attr('y', d => yPay(d.count))
         .attr('x', d => xPay(d.pay))
         .attr('width', xPay.bandwidth)
-        .attr('height', d => HEIGHT - yPay(d.count))
+        .attr('height', d => HEIGHT_S - yPay(d.count))
         .attr('fill', 'black');
 
   };
@@ -378,7 +377,7 @@ g_loc.append('text')
     .attr('y', HEIGHT + 50)
     .attr('font-size', '15px')
     .attr('text-anchor', 'middle')
-    .text('Count');
+    .text('Co-op Count');
 
 var y_loc = d3.scaleBand()		
     .rangeRound([0, HEIGHT])	

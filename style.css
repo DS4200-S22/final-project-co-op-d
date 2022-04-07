@@ -10,6 +10,16 @@ h1, h2, h3 {
     text-align: center;
 }
 
+.horizontal-container {
+    display: flex;
+    justify-content: center;
+}
+
+.pay-rating-container {
+    display: flex;
+    flex-direction: column;
+}
+
 /* Narrow Column */
 .content-column {
     max-width: 65%;
