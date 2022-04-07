@@ -361,19 +361,32 @@ d3.csv('data/coops.csv').then(data => {
 
 
 // Location Distribution:
-var svg_loc = d3.select('#location-bars').append('svg'),
-    margin_loc = {top: 10, right: 10, bottom: 130, left: 100},
-    width_loc = 600 - margin_loc.left - margin_loc.right,
-    height_loc = 400 - margin_loc.top - margin_loc.bottom,
-    g_loc = svg_loc.append("g").attr("transform", "translate(" + margin_loc.left + "," + margin_loc.top + ")");
+const svg_loc = d3.select('#location-bars').append('svg')
+    .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
+    .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
+    
+    .style('display', 'block')
+    .style('margin', 'auto');
+
+const g_loc = svg_loc.append('g')
+  .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+
+// X Label:
+g_loc.append('text')
+    .attr('class', 'x axis-label')
+    .attr('x', WIDTH / 2)
+    .attr('y', HEIGHT + 50)
+    .attr('font-size', '15px')
+    .attr('text-anchor', 'middle')
+    .text('Count');
 
 var y_loc = d3.scaleBand()		
-    .rangeRound([0, height_loc])	
+    .rangeRound([0, HEIGHT])	
     .paddingInner(0.05)
     .align(0.1);
 
 var x_loc = d3.scaleLinear()		
-    .rangeRound([0, width_loc]);	
+    .rangeRound([0, WIDTH]);	
 
 var z_loc = d3.scaleOrdinal()
     .range(["#324c80", "#4e8032", "#ada547"]);
@@ -428,7 +441,7 @@ d3.csv('data/coops.csv').then(data => {
     .selectAll("rect")
     .data(function(d) { return d; })
     .enter().append("rect")
-      .attr("y", function(d) { console.log(d.data.Location); return y_loc(d.data.Location); })	  
+      .attr("y", function(d) { return y_loc(d.data.Location); })	  
       .attr("x", function(d) { return x_loc(d[0]); })			   
       .attr("width", function(d) { return x_loc(d[1]) - x_loc(d[0]); })	
       .attr("height", y_loc.bandwidth());						   
@@ -440,17 +453,8 @@ d3.csv('data/coops.csv').then(data => {
 
   g_loc.append("g")
       .attr("class", "axis")
-	  .attr("transform", "translate(0,"+height_loc+")")				
-      .call(d3.axisBottom(x_loc).ticks(null, "s"))				
-    .append("text")
-      .attr("y", 5)											
-      .attr("x", x_loc(x_loc.ticks().pop()) + 0.5) 						
-      .attr("dy", "0.32em")									
-      .attr("fill", "#000")
-      .attr("font-weight", "bold")
-      .attr("text-anchor", "start")
-      .text("Population")
-	  .attr("transform", "translate("+ (-width_loc) +",-10)");   	
+	  .attr("transform", "translate(0,"+HEIGHT+")")				
+      .call(d3.axisBottom(x_loc).ticks(null, "s"));   	
 
   var legend_loc = g_loc.append("g")
       .attr("font-family", "sans-serif")
@@ -459,21 +463,18 @@ d3.csv('data/coops.csv').then(data => {
     .selectAll("g")
     .data(keys_loc.slice().reverse())
     .enter().append("g")
-	 .attr("transform", function(d, i) { return "translate(-50," + (300 + i * 20) + ")"; });
+	 .attr("transform", function(d, i) { return "translate(-0," + (100 + i * 20) + ")"; });
 
   legend_loc.append("rect")
-      .attr("x", width_loc - 19)
+      .attr("x", WIDTH - 19)
       .attr("width", 19)
       .attr("height", 19)
       .attr("fill", z_loc);
 
   legend_loc.append("text")
-      .attr("x", width_loc - 24)
+      .attr("x", WIDTH - 24)
       .attr("y", 9.5)
       .attr("dy", "0.32em")
       .text(function(d) { return d; });
   
 });
-  
-
-
