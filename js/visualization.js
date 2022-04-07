@@ -477,3 +477,150 @@ d3.csv('data/coops.csv').then(data => {
       .text(function(d) { return d; });
   
 });
+
+
+// College Distribution:
+const svg_college = d3.select('#college-bars').append('svg')
+    .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
+    .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
+    
+    .style('display', 'block')
+    .style('margin', 'auto');
+
+const g_college = svg_college.append('g')
+  .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+
+// X Label:
+g_college.append('text')
+    .attr('class', 'x axis-label')
+    .attr('x', WIDTH / 2)
+    .attr('y', HEIGHT + 50)
+    .attr('font-size', '15px')
+    .attr('text-anchor', 'middle')
+    .text('nth Co-op');
+
+// Y Label:
+g_college.append('text')
+        .attr('class', 'y axis-label')
+        .attr('x', -(HEIGHT_S / 2))
+        .attr('y', -30)
+        .attr('font-size', '15px')
+        .attr('text-anchor', 'middle')
+        .attr('transform', 'rotate(-90)')
+        .text('Co-op Count');
+
+var x_college = d3.scaleBand()    
+    .range([0, WIDTH])  
+    .paddingInner(0.2);
+
+var y_college = d3.scaleLinear()    
+    .range([HEIGHT, 0]);  
+
+var z_college = d3.scaleOrdinal()
+    .range(['#e41a1c','#377eb8','#4daf4a', '#ffff00', '#ffa500', '#6a0dad']);
+
+d3.csv('data/coops.csv').then(data => {
+  data.forEach(d => {
+    d.nThCoop = String(d.nThCoop);
+  });
+
+  const groupByCollegeNthCoop = d3.group(data, d => d.nThCoop, d => d.college);
+  const college_d = [];
+  for (const [key, value] of groupByCollegeNthCoop.entries()) {
+    var dict = {};
+    dict.Coop = key;
+    var currentCoop= value;
+    var nthKeys = Array.from(currentCoop.keys()); 
+
+    // get value for the college
+    if (nthKeys.includes('College of Social Sciences and Humanities')){
+      dict.SocialScienceAndHumanities = currentCoop.get('College of Social Sciences and Humanities').length;
+    } else {
+      dict.SocialScienceAndHumanities = 0;
+    }
+    if (nthKeys.includes('College of Engineering')){
+      dict.Engineering = currentCoop.get('College of Engineering').length;
+    } else {
+      dict.Engineering = 0;
+    }
+    if (nthKeys.includes('College of Science')){
+      dict.Science = currentCoop.get('College of Science').length;
+    } else {
+      dict.Science = 0;
+    }
+    if (nthKeys.includes('College of Arts, Media and Design')){
+      dict.ArtMediaAndDesign = currentCoop.get('College of Arts, Media and Design').length;
+    } else {
+      dict.ArtMediaAndDesign = 0;
+    }
+    if (nthKeys.includes("D'Amore-McKim School of Business")){
+      dict.Business = currentCoop.get("D'Amore-McKim School of Business").length;
+    } else {
+      dict.Business= 0;
+    }
+    if (nthKeys.includes('Khoury College of Computer Sciences')){
+      dict.Khoury = currentCoop.get('Khoury College of Computer Sciences').length;
+    } else {
+      dict.Khoury = 0;
+    }
+
+
+    dict.total = dict.SocialScienceAndHumanities + dict.Engineering + dict.Science + dict.ArtMediaAndDesign + dict.Business + dict.Khoury;
+    college_d.push(dict);
+  }
+ 
+
+  var keys_college = ["SocialScienceAndHumanities", "Engineering", "Science", "ArtMediaAndDesign", "Business", "Khoury"];
+
+  college_d.sort(function(a, b) { return b.total - a.total; });
+  x_college.domain(college_d.map(function(d) { return d.Coop; }));          
+  y_college.domain([0, d3.max(college_d, function(d) { return d.total; })]); 
+  z_college.domain(keys_college);
+
+  var xSubgroup = d3.scaleBand().domain(keys_college).range([0, x_college.bandwidth()]).padding([0.05]);
+
+  g_college.append("g")
+    .selectAll("g")
+    .data(college_d)
+    .enter().append("g")
+      .attr("transform", function(d) { return "translate(" + x_college(d.Coop) + ",0)"; })
+    .selectAll("rect")
+    .data(function(d) { return keys_college.map(function(key) {return {key: key, value: d[key]}; }); })
+    .enter().append("rect")
+      .attr("x", function(d) { return xSubgroup(d.key); })    
+      .attr("y", function(d) { return y_college(d.value); })        
+      .attr("width", xSubgroup.bandwidth())
+      .attr("height", function(d) {return HEIGHT - y_college(d.value); })
+      .attr("fill", function(d) { return z_college(d.key); });             
+
+  g_college.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0,0)")          
+      .call(d3.axisLeft(y_college));                  
+
+  g_college.append("g")
+    .attr("transform", "translate(0,"+HEIGHT+")")       
+      .call(d3.axisBottom(x_college).tickSize(0));     
+
+  var legend_college = g_college.append("g")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", 10)
+      .attr("text-anchor", "end")
+    .selectAll("g")
+    .data(keys_college.slice().reverse())
+    .enter().append("g")
+   .attr("transform", function(d, i) { return "translate(-0," + (100 + i * 20) + ")"; });;
+
+  legend_college.append("rect")
+      .attr("x", WIDTH - 19)
+      .attr("width", 19)
+      .attr("height", 19)
+      .attr("fill", z_college);
+
+  legend_college.append("text")
+      .attr("x", WIDTH - 24)
+      .attr("y", 9.5)
+      .attr("dy", "0.32em")
+      .text(function(d) { return d; });
+  
+});
