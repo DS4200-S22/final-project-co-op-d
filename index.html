@@ -67,7 +67,7 @@
                 <option value="College of Arts, Media and Design">CAMD</option>
             </select>
             <!-- Location filter  -->
-            <select id="collegeFilter" onChange="filterByLocation()">
+            <select id="locationFilterFilter" onChange="filterByLocation()">
                 <option value="Massachusetts">Massachusetts</option>
                 <option value="New York">New York</option>
                 <option value="California">California</option>
@@ -81,14 +81,12 @@
                 <option value="Oregon">Oregon</option>
             </select>
             <!-- nTh filter -->
-            <div class="dropdown">
-                <button class="dropbtn">nTh</button>
-                <div class="dropdown-content">
-                    <a href="#">Link 1</a>
-                    <a href="#">Link 2</a>
-                    <a href="#">Link 3</a>
-                </div>
-            </div>
+            <select id="nThFilter" onChange="filterByNth()">
+                <option value="1">First CoOp</option>
+                <option value="2">Second CoOp</option>
+                <option value="3">Third CoOp</option>
+               
+            </select>
         </div>
         
         <h3>Company Scatterplot</h3>
