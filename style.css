@@ -1,6 +1,5 @@
 /* General formatting */
 body {
-    padding: 0 10px;
     font: 18px/1.5 -apple-system, BlinkMacSystemFont, "avenir next", avenir, "Segoe UI", "lucida grande", "helvetica neue", helvetica, "Fira Sans", roboto, noto, "Droid Sans", cantarell, oxygen, ubuntu, "franklin gothic medium", "century gothic", "Liberation Sans",
     sans-serif;
 }
@@ -8,6 +7,26 @@ body {
 h1, h2, h3 {
     line-height: 1.2;
     text-align: center;
+}
+
+#repo-link {
+    text-align: center;
+    margin: auto;
+    padding: 0.5rem;
+}
+
+#team-names {
+    text-align: center;
+    margin: auto;
+}
+
+.content-column {
+    max-width: 80%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .horizontal-container {
@@ -18,12 +37,6 @@ h1, h2, h3 {
 .pay-rating-container {
     display: flex;
     flex-direction: column;
-}
-
-/* Narrow Column */
-.content-column {
-    max-width: 65%;
-    margin: 40px auto;
 }
 
 /* Full-width and Full-height */
@@ -44,7 +57,7 @@ h1, h2, h3 {
     margin: 0 auto;
     display: block;
     outline: none;
-    padding: 10px;
+    padding: 0.5rem;
     background-color: #27ae60;
     border: none;
     box-shadow: 0 9px #95a5a6;
