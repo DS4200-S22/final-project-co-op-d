@@ -627,5 +627,17 @@ d3.csv('data/coops.csv').then(data => {
 
 });
 
+ // Filter by college
+ function filterByCollege() {
+  var select = document.getElementById('collegeFilter');
+	var option = select.options[select.selectedIndex];
+
+  
+    tempData = globalData.filter(d => d.college === option.value);
+    updateBarGraphs();
+    // d3.select('#current-company').text(`Currently Selected: ${ company[0].company }`);
+  
+}
+
 
 

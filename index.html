@@ -56,8 +56,45 @@
 
 <div class="horizontal-container">
     <div id="company-scatter-plot">
+        <div class="horizontal-container">
+            <!-- College filter -->
+            <select id="collegeFilter" onChange="filterByCollege()">
+                <option value="D'Amore-McKim School of Business">D'Amore-McKim</option>
+                <option value="Khoury College of Computer Sciences">Khoury</option>
+                <option value="College of Engineering">Engineering</option>
+                <option value="College of Social Sciences and Humanities">Social Sciences and Humanities</option>
+                <option value="College of Science">College of Science</option>
+                <option value="College of Arts, Media and Design">CAMD</option>
+            </select>
+            <!-- Location filter  -->
+            <select id="collegeFilter" onChange="filterByLocation()">
+                <option value="Massachusetts">Massachusetts</option>
+                <option value="New York">New York</option>
+                <option value="California">California</option>
+                <option value="Rhode Island">Rhode Island</option>
+                <option value="Washington">Washington</option>
+                <option value="New Jersey">New Jersey</option>
+                <option value="Maryland">Maryland</option>
+                <option value="North Carolina">North Carolina</option>
+                <option value="District of Columbia">District of Columbia</option>
+                <option value="Connecticut">Connecticut</option>
+                <option value="Oregon">Oregon</option>
+            </select>
+            <!-- nTh filter -->
+            <div class="dropdown">
+                <button class="dropbtn">nTh</button>
+                <div class="dropdown-content">
+                    <a href="#">Link 1</a>
+                    <a href="#">Link 2</a>
+                    <a href="#">Link 3</a>
+                </div>
+            </div>
+        </div>
+        
         <h3>Company Scatterplot</h3>
     </div>
+
+    
 
     <div class="pay-rating-container">
 
