@@ -32,6 +32,7 @@ h1, h2, h3 {
 .horizontal-container {
     display: flex;
     justify-content: center;
+    padding: 5px;
 }
 
 .pay-rating-container {
@@ -50,29 +51,96 @@ h1, h2, h3 {
     text-align: center;
 }
 
-#reset-button {
-    width: 7.7%;
-    height: 7.5%;
+select {
+    margin: auto 5px;
+    width: 150px;
+    padding: 5px 35px 5px 5px;
+    font-size: 16px;
+    border: 1px solid #CCC;
+    height: 34px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url(https://icon-library.com/images/dropdown-arrow-icon/dropdown-arrow-icon-1.jpg) 96% / 15% no-repeat #EEE;
+}
+
+.dropdown-title {
+    text-align: center;
+    font-weight: bold;
+}
+
+button {
+    width: 60px;
+    height: 35px;
+    text-align: center;
     cursor: pointer;
-    margin: 0 auto;
+    margin: 20px 5px 5px 5px;
     display: block;
-    outline: none;
     padding: 0.5rem;
+    outline: none;
     background-color: #27ae60;
     border: none;
     box-shadow: 0 9px #95a5a6;
-    font: 18px/1.5 -apple-system, BlinkMacSystemFont, "avenir next", avenir, "Segoe UI", "lucida grande", "helvetica neue", helvetica, "Fira Sans", roboto, noto, "Droid Sans", cantarell, oxygen, ubuntu, "franklin gothic medium", "century gothic", "Liberation Sans",
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "avenir next", avenir, "Segoe UI", "lucida grande", "helvetica neue", helvetica, "Fira Sans", roboto, noto, "Droid Sans", cantarell, oxygen, ubuntu, "franklin gothic medium", "century gothic", "Liberation Sans",
     sans-serif;
     font-weight: bold;
     border-radius: 1rem;
 }
 
-#reset-button:hover {
+button:hover {
     background-color: #2ecc71;
 }
 
-#reset-button:active {
+button:active {
     background-color: #2ecc71;
     box-shadow: 0 5px #95a5a6;
     transform: translateY(4px);
+}
+
+/* Dropdown Button */
+.dropbtn {
+    background-color: #04AA6D;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
 }
