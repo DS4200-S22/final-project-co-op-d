@@ -5,38 +5,6 @@ const WIDTH_S = 400 - MARGIN.LEFT - MARGIN.RIGHT;
 const HEIGHT_S = 300 - MARGIN.TOP - MARGIN.BOTTOM;
 const yTooltipOffset = 10;
 
-// Company Scatter Plot:
-
-const svg_company_scatter_plot = d3.select('#company-scatter-plot').append('svg')
-    .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-    .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
-    .style('display', 'block')
-    .style('margin', 'auto');
-
-const g_company_scatter_plot = svg_company_scatter_plot.append('g')
-    .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
-
-// X Label:
-
-g_company_scatter_plot.append('text')
-    .attr('class', 'x axis-label')
-    .attr('x', WIDTH / 2)
-    .attr('y', HEIGHT + 50)
-    .attr('font-size', '20px')
-    .attr('text-anchor', 'middle')
-    .text('Average Pay');
-
-// Y Label
-
-g_company_scatter_plot.append('text')
-    .attr('class', 'y axis-label')
-    .attr('x', -(HEIGHT / 2))
-    .attr('y', -60)
-    .attr('font-size', '20px')
-    .attr('text-anchor', 'middle')
-    .attr('transform', 'rotate(-90)')
-    .text('Average Rating');
-
 d3.csv('data/coops.csv').then(data => {
   data.forEach(d => {
     d.pay = Number(d.pay);
@@ -46,130 +14,182 @@ d3.csv('data/coops.csv').then(data => {
     d.nThCoop = String(d.nThCoop);
   });
 
-  data = data.filter(d => d.isCoop === 'TRUE');
+  data = data.filter(d => d.isCoop === 'TRUE' && d.isPayVisible === 'TRUE');
   const globalData = JSON.parse(JSON.stringify(data)); // deep copy
-  let tempData = globalData;
-  data = data.filter(d => d.isPayVisible === 'TRUE' && d.pay > 15);
+  let scatterPlotData = globalData;
+  let tempData = scatterPlotData;
 
-  d3.select('#current-company').text('Currently Selected: All Companies');
+  d3.select('#current-company').text('Currently Selected: All Companies In Scatter Plot');
 
-  const groupedByCompany = d3.group(data, d => d.company);
-
-  // Finds Average Pay for each Company:
-  groupedByCompany.forEach(group => {
-    group.averagePay = d3.mean(group, d => d.pay);
-    group.averageRating = d3.mean(group, d => d.rating);
-  });
-
-  const arrayOfAveragePay = [];
-
-  groupedByCompany.forEach((company) => {
-    arrayOfAveragePay.push(company.averagePay);
-  });
-
-  const arrayOfAverageRating = [];
-
-  groupedByCompany.forEach((company) => {
-    arrayOfAverageRating.push(company.averageRating);
-  });
-
-  const maxPay = d3.max(arrayOfAveragePay);
-  const minPay = d3.min(arrayOfAveragePay);
-
-  const maxRating = d3.max(arrayOfAverageRating);
-
-  const x = d3.scaleLinear()
-      .domain([ minPay, maxPay ])
-      .range([ 0, WIDTH ]);
-
-  const y = d3.scaleLinear()
-      .domain([ 1, maxRating ])
-      .range([ HEIGHT, 0 ]);
-
-  const xAxisCall = d3.axisBottom(x);
-  g_company_scatter_plot.append('g')
-      .attr('class', 'x axis')
-      .attr('transform', `translate(0, ${ HEIGHT })`)
-      .call(xAxisCall);
-
-  const yAxisCall = d3.axisLeft(y);
-  g_company_scatter_plot.append('g')
-      .attr('class', 'y axis')
-      .call(yAxisCall);
-
-  // Tooltip:
-
-  const tooltip = d3.select('#company-scatter-plot')
-      .append('div')
-      .attr('id', 'tooltip')
-      .style('opacity', 0)
-      .style('border', 'solid')
-      .style('border-color', 'black')
-      .style('text-align', 'center')
-      .attr('class', 'tooltip');
-
-  const mouseover = (event, d) => {
-    tooltip.html(
-        `Name: ${ d[0].company }
-<br>Average Pay: $${ Math.round(d.averagePay * 100) / 100 }
-<br>Average Rating: ${ Math.round(d.averageRating * 100) / 100 }
-<br>Number of Reviews: ${ d.length }`)
-        .style('opacity', 1);
-  };
-
-  const mousemove = (event) => {
-    // change the location data of the cursor
-    tooltip.style('left', (event.pageX) + 'px').style('top', (event.pageY + yTooltipOffset) + 'px');
-  };
-
-  const mouseleave = () => {
-    tooltip.style('opacity', 0);
-  };
-
-  const updateBarGraphs = () => {
+  const updateGraphs = () => {
+    d3.select('#company-scatter-plot').select('svg').remove();
+    d3.select('#company-scatter-plot').select('#tooltip').remove();
     d3.select('#rating-distribution').select('svg').remove();
     d3.select('#pay-distribution').select('svg').remove();
     d3.select('#location-bars').select('svg').remove();
     d3.select('#college-bars').select('svg').remove();
+    companyScatterPlot();
     payDistribution();
     ratingDistribution();
     locationDistribution();
     collegeDistribution();
   };
 
-  /**
-   * Sets globalData to only include the data for the selected company.
-   */
-  const mouseup = (event, company) => {
-    tempData = globalData.filter(d => d.company === company[0].company);
-    updateBarGraphs();
-    d3.select('#current-company').text(`Currently Selected: ${ company[0].company }`);
-  };
-
   const resetBarGraphs = () => {
-    tempData = globalData;
-    updateBarGraphs();
-    d3.select('#current-company').text('Currently Selected: All Companies');
+    scatterPlotData = globalData;
+    tempData = scatterPlotData;
+    updateGraphs();
+    d3.select('#current-company').text('Currently Selected: All Companies In Scatter Plot');
+    const selectCollege = document.getElementById('collegeFilter');
+    const selectLocation = document.getElementById('locationFilter');
+    const selectNth = document.getElementById('nThFilter');
+    selectCollege.selectedIndex = 0;
+    selectLocation.selectedIndex = 0;
+    selectNth.selectedIndex = 0;
+    filters.college = '';
+    filters.location = '';
+    filters.nTh = '';
   };
 
-  d3.select('#reset-button').on('click', resetBarGraphs);
+  const companyScatterPlot = () => {
 
-  // Circles:
-  g_company_scatter_plot.selectAll('circle')
-      .data(groupedByCompany.values())
-      .enter()
-      .append('circle')
-      .attr('cx', d => x(d.averagePay))
-      .attr('cy', d => y(d.averageRating))
-      .attr('r', d => d.length + 5)
-      .attr('fill', '#69b3a2')
-      .attr('stroke', 'black')
-      .attr('stroke-width', '1px')
-      .style('cursor', 'pointer')
-      .on('mouseover', mouseover)
-      .on('mousemove', mousemove)
-      .on('mouseleave', mouseleave)
-      .on('mouseup', mouseup);
+    // Company Scatter Plot:
+
+    const svg_company_scatter_plot = d3.select('#company-scatter-plot').append('svg')
+        .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
+        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
+        .style('display', 'block')
+        .style('margin', 'auto');
+
+    const g_company_scatter_plot = svg_company_scatter_plot.append('g')
+        .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+
+// X Label:
+
+    g_company_scatter_plot.append('text')
+        .attr('class', 'x axis-label')
+        .attr('x', WIDTH / 2)
+        .attr('y', HEIGHT + 50)
+        .attr('font-size', '20px')
+        .attr('text-anchor', 'middle')
+        .text('Average Pay');
+
+// Y Label
+
+    g_company_scatter_plot.append('text')
+        .attr('class', 'y axis-label')
+        .attr('x', -(HEIGHT / 2))
+        .attr('y', -60)
+        .attr('font-size', '20px')
+        .attr('text-anchor', 'middle')
+        .attr('transform', 'rotate(-90)')
+        .text('Average Rating');
+
+    const groupedByCompany = d3.group(scatterPlotData, d => d.company);
+
+    // Finds Average Pay for each Company:
+    groupedByCompany.forEach(group => {
+      group.averagePay = d3.mean(group, d => d.pay);
+      group.averageRating = d3.mean(group, d => d.rating);
+    });
+
+    const arrayOfAveragePay = [];
+
+    groupedByCompany.forEach((company) => {
+      arrayOfAveragePay.push(company.averagePay);
+    });
+
+    const arrayOfAverageRating = [];
+
+    groupedByCompany.forEach((company) => {
+      arrayOfAverageRating.push(company.averageRating);
+    });
+
+    const maxPay = d3.max(arrayOfAveragePay);
+    const minPay = d3.min(arrayOfAveragePay);
+
+    const maxRating = d3.max(arrayOfAverageRating);
+
+    const x = d3.scaleLinear()
+        .domain([ minPay, maxPay ])
+        .range([ 0, WIDTH ]);
+
+    const y = d3.scaleLinear()
+        .domain([ 1, maxRating ])
+        .range([ HEIGHT, 0 ]);
+
+    const xAxisCall = d3.axisBottom(x);
+    g_company_scatter_plot.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', `translate(0, ${ HEIGHT })`)
+        .call(xAxisCall);
+
+    const yAxisCall = d3.axisLeft(y);
+    g_company_scatter_plot.append('g')
+        .attr('class', 'y axis')
+        .call(yAxisCall);
+
+    // Tooltip:
+
+    const tooltip = d3.select('#company-scatter-plot')
+        .append('div')
+        .attr('id', 'tooltip')
+        .style('opacity', 0)
+        .style('border', 'solid')
+        .style('border-color', 'black')
+        .style('text-align', 'center')
+        .attr('class', 'tooltip');
+
+    const mouseover = (event, d) => {
+      tooltip.html(
+          `Name: ${ d[0].company }
+<br>Average Pay: $${ Math.round(d.averagePay * 100) / 100 }
+<br>Average Rating: ${ Math.round(d.averageRating * 100) / 100 }
+<br>Number of Reviews: ${ d.length }`)
+          .style('opacity', 1);
+    };
+
+    const mousemove = (event) => {
+      // change the location data of the cursor
+      tooltip.style('left', (event.pageX) + 'px')
+          .style('top', (event.pageY + yTooltipOffset) + 'px');
+    };
+
+    const mouseleave = () => {
+      tooltip.style('opacity', 0);
+    };
+
+    /**
+     * Sets globalData to only include the data for the selected company.
+     */
+    const scatterPlotMouseUp = (event, company) => {
+      tempData = scatterPlotData.filter(d => d.company === company[0].company);
+      updateGraphs();
+      d3.select('#current-company').text(`Currently Selected: ${ company[0].company }`);
+    };
+
+    d3.select('#reset-button').on('click', resetBarGraphs);
+
+    // Circles:
+    g_company_scatter_plot.selectAll('circle')
+        .data(groupedByCompany.values())
+        .enter()
+        .append('circle')
+        .attr('cx', d => x(d.averagePay))
+        .attr('cy', d => y(d.averageRating))
+        .attr('r', d => d.length + 5)
+        .attr('fill', '#69b3a2')
+        .attr('stroke', 'black')
+        .attr('stroke-width', '1px')
+        .style('cursor', 'pointer')
+        .on('mouseover', mouseover)
+        .on('mousemove', mousemove)
+        .on('mouseleave', mouseleave)
+        .on('mouseup', scatterPlotMouseUp);
+
+  };
+
+  companyScatterPlot();
 
   // Rating Distribution:
 
@@ -625,19 +645,52 @@ d3.csv('data/coops.csv').then(data => {
 
   collegeDistribution();
 
+  const filters = {
+    college: '',
+    location: '',
+    nth: '',
+  };
+
+  const applyFilters = () => {
+    scatterPlotData = globalData;
+    if (filters.college !== '') {
+      scatterPlotData = scatterPlotData.filter(d => d.college === filters.college);
+    }
+    if (filters.location !== '') {
+      scatterPlotData = scatterPlotData.filter(d => d.state === filters.location);
+    }
+    if (filters.nth !== '') {
+      scatterPlotData = scatterPlotData.filter(d => d.nThCoop === filters.nth);
+    }
+    tempData = scatterPlotData;
+    updateGraphs();
+  };
+
+  d3.select('#apply-button').on('click', applyFilters);
+
+  function filterByCollege() {
+    const select = document.getElementById('collegeFilter');
+    const option = select.options[select.selectedIndex];
+    filters.college = option.value;
+  }
+
+  function filterByLocation() {
+    const select = document.getElementById('locationFilter');
+    const option = select.options[select.selectedIndex];
+    filters.location = option.value;
+  }
+
+  function filterByNthCoop() {
+    const select = document.getElementById('nThFilter');
+    const option = select.options[select.selectedIndex];
+    filters.nth = option.value;
+  }
+
+  d3.select('#collegeFilter').on('change', filterByCollege);
+  d3.select('#locationFilter').on('change', filterByLocation);
+  d3.select('#nThFilter').on('change', filterByNthCoop);
+
 });
-
- // Filter by college
- function filterByCollege() {
-  var select = document.getElementById('collegeFilter');
-	var option = select.options[select.selectedIndex];
-
-  
-    tempData = globalData.filter(d => d.college === option.value);
-    updateBarGraphs();
-    // d3.select('#current-company').text(`Currently Selected: ${ company[0].company }`);
-  
-}
 
 
 

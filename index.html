@@ -58,53 +58,67 @@
     <div id="company-scatter-plot">
         <div class="horizontal-container">
             <!-- College filter -->
-            <select id="collegeFilter" onChange="filterByCollege()">
-                <option value="D'Amore-McKim School of Business">D'Amore-McKim</option>
-                <option value="Khoury College of Computer Sciences">Khoury</option>
-                <option value="College of Engineering">Engineering</option>
-                <option value="College of Social Sciences and Humanities">Social Sciences and Humanities</option>
-                <option value="College of Science">College of Science</option>
-                <option value="College of Arts, Media and Design">CAMD</option>
-            </select>
+            <div>
+                <label for="collegeFilter"></label>
+                <div class="dropdown-title">College</div>
+                <select id="collegeFilter" onChange="filterByCollege">
+                    <option value="">None</option>
+                    <option value="D'Amore-McKim School of Business">D'Amore-McKim</option>
+                    <option value="Khoury College of Computer Sciences">Khoury</option>
+                    <option value="College of Engineering">Engineering</option>
+                    <option value="College of Social Sciences and Humanities">Social Sciences and
+                        Humanities
+                    </option>
+                    <option value="College of Science">College of Science</option>
+                    <option value="College of Arts, Media and Design">CAMD</option>
+                </select>
+            </div>
+
             <!-- Location filter  -->
-            <select id="locationFilterFilter" onChange="filterByLocation()">
-                <option value="Massachusetts">Massachusetts</option>
-                <option value="New York">New York</option>
-                <option value="California">California</option>
-                <option value="Rhode Island">Rhode Island</option>
-                <option value="Washington">Washington</option>
-                <option value="New Jersey">New Jersey</option>
-                <option value="Maryland">Maryland</option>
-                <option value="North Carolina">North Carolina</option>
-                <option value="District of Columbia">District of Columbia</option>
-                <option value="Connecticut">Connecticut</option>
-                <option value="Oregon">Oregon</option>
-            </select>
+            <div>
+                <label for="locationFilter"></label>
+                <div class="dropdown-title">Location</div>
+                <select id="locationFilter" onChange="filterByLocation">
+                    <option value="">None</option>
+                    <option value="Massachusetts">Massachusetts</option>
+                    <option value="New York">New York</option>
+                    <option value="California">California</option>
+                    <option value="Rhode Island">Rhode Island</option>
+                    <option value="Washington">Washington</option>
+                    <option value="New Jersey">New Jersey</option>
+                    <option value="Maryland">Maryland</option>
+                    <option value="North Carolina">North Carolina</option>
+                    <option value="District of Columbia">District of Columbia</option>
+                    <option value="Connecticut">Connecticut</option>
+                    <option value="Oregon">Oregon</option>
+                </select>
+            </div>
+
             <!-- nTh filter -->
-            <select id="nThFilter" onChange="filterByNth()">
-                <option value="1">First CoOp</option>
-                <option value="2">Second CoOp</option>
-                <option value="3">Third CoOp</option>
-               
-            </select>
+            <div>
+                <label for="nThFilter"></label>
+                <div class="dropdown-title">N'th CoOp</div>
+                <select id="nThFilter" onChange="filterByNth()">
+                    <option value="">None</option>
+                    <option value="1">First CoOp</option>
+                    <option value="2">Second CoOp</option>
+                    <option value="3">Third CoOp</option>
+                </select>
+            </div>
+            <button type="button" id="apply-button">Apply</button>
+            <button type="button" id="reset-button">Reset</button>
         </div>
-        
         <h3>Company Scatterplot</h3>
     </div>
-
-    
 
     <div class="pay-rating-container">
 
         <h2 id="current-company"></h2>
 
-        <button type="button" id="reset-button">Reset</button>
-
         <div class="horizontal-container">
             <div id="pay-distribution">
                 <h3>Pay Distribution</h3>
             </div>
-
             <div id="rating-distribution">
                 <h3>Rating Distribution</h3>
             </div>
@@ -116,7 +130,6 @@
     <div id="location-bars">
         <h3>Location Graph</h3>
     </div>
-
     <div id="college-bars">
         <h3>College Graph</h3>
     </div>
