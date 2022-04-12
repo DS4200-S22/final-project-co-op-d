@@ -78,7 +78,6 @@ button {
     display: block;
     padding: 0.5rem;
     outline: none;
-    background-color: #27ae60;
     border: none;
     box-shadow: 0 9px #95a5a6;
     font: 16px/1.5 -apple-system, BlinkMacSystemFont, "avenir next", avenir, "Segoe UI", "lucida grande", "helvetica neue", helvetica, "Fira Sans", roboto, noto, "Droid Sans", cantarell, oxygen, ubuntu, "franklin gothic medium", "century gothic", "Liberation Sans",
@@ -87,14 +86,25 @@ button {
     border-radius: 1rem;
 }
 
-button:hover {
-    background-color: #2ecc71;
-}
-
 button:active {
-    background-color: #2ecc71;
     box-shadow: 0 5px #95a5a6;
     transform: translateY(4px);
+}
+
+#reset-button {
+    background-color: red;
+}
+
+#reset-button:hover {
+    background-color: darkred;
+}
+
+#apply-button {
+    background-color: green;
+}
+
+#apply-button:hover {
+    background-color: darkgreen;
 }
 
 /* Dropdown Button */
