@@ -382,6 +382,7 @@ d3.csv('data/coops.csv').then(data => {
   payDistribution();
 
   let curFeature = "";
+  let featLabel = "Co-op Count";
 
   function getAvgOfKey(dictList, key) {
     let total = 0;
@@ -409,7 +410,7 @@ d3.csv('data/coops.csv').then(data => {
       .attr('y', HEIGHT + 50)
       .attr('font-size', '15px')
       .attr('text-anchor', 'middle')
-      .text('Co-op Count');
+      .text(featLabel);
 
     const y_loc = d3.scaleBand()
       .rangeRound([0, HEIGHT])
@@ -570,7 +571,7 @@ d3.csv('data/coops.csv').then(data => {
       .attr('font-size', '15px')
       .attr('text-anchor', 'middle')
       .attr('transform', 'rotate(-90)')
-      .text('Co-op Count');
+      .text(featLabel);
 
     const x_college = d3.scaleBand()
       .range([0, WIDTH])
@@ -809,6 +810,17 @@ d3.csv('data/coops.csv').then(data => {
   // A function that update the chart
   function updateFeature(selectedFeature) {
     curFeature = selectedFeature;
+
+    switch (selectedFeature){
+      case "avg-pay":
+        featLabel = "Average Pay";
+        break;
+      case "avg-rate":
+        featLabel = "Average Rating";
+        break;
+      default:
+        featLabel = "Co-op Count";
+    }
     updateGraphs();
   }
 
