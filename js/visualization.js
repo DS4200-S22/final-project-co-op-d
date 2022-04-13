@@ -56,6 +56,7 @@ d3.csv('data/coops.csv').then(data => {
     // Company Scatter Plot:
 
     const svg_company_scatter_plot = d3.select('#company-scatter-plot').append('svg')
+    .attr("viewBox", "0 0 600 400")
       .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
       .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
       .style('display', 'block')
@@ -195,6 +196,7 @@ d3.csv('data/coops.csv').then(data => {
 
   const ratingDistribution = () => {
     const svg_rating = d3.select('#rating-distribution').append('svg')
+      .attr("viewBox", "0 0 400 300")
       .attr('width', WIDTH_S + MARGIN.LEFT + MARGIN.RIGHT)
       .attr('height', HEIGHT_S + MARGIN.TOP + MARGIN.BOTTOM)
       .style('display', 'block')
@@ -272,6 +274,7 @@ d3.csv('data/coops.csv').then(data => {
   const payDistribution = () => {
 
     const svg_pay = d3.select('#pay-distribution').append('svg')
+    .attr("viewBox", "0 0 400 300")
       .attr('width', WIDTH_S + MARGIN.LEFT + MARGIN.RIGHT)
       .attr('height', HEIGHT_S + MARGIN.TOP + MARGIN.BOTTOM)
       .style('display', 'block')
@@ -395,6 +398,7 @@ d3.csv('data/coops.csv').then(data => {
   const locationDistribution = () => {
     // Location Distribution:
     const svg_loc = d3.select('#location-bars').append('svg')
+    .attr("viewBox", "0 0 600 400")
       .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
       .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
       .style('display', 'block')
@@ -546,6 +550,7 @@ d3.csv('data/coops.csv').then(data => {
 
     // College Distribution:
     const svg_college = d3.select('#college-bars').append('svg')
+    .attr("viewBox", "0 0 600 400")
       .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
       .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
       .style('display', 'block')
@@ -590,7 +595,7 @@ d3.csv('data/coops.csv').then(data => {
       dict.Coop = key;
       const currentCoop = value;
       const nthKeys = Array.from(currentCoop.keys());
-     
+
       // get value for the college
       switch (curFeature) {
         case "avg-pay":
@@ -629,7 +634,7 @@ d3.csv('data/coops.csv').then(data => {
         case "avg-rate":
           if (nthKeys.includes('College of Social Sciences and Humanities')) {
             dict.SocialScienceAndHumanities =
-            getAvgOfKey(currentCoop.get('College of Social Sciences and Humanities'), 'rating');
+              getAvgOfKey(currentCoop.get('College of Social Sciences and Humanities'), 'rating');
           } else {
             dict.SocialScienceAndHumanities = 0;
           }
@@ -811,7 +816,7 @@ d3.csv('data/coops.csv').then(data => {
   function updateFeature(selectedFeature) {
     curFeature = selectedFeature;
 
-    switch (selectedFeature){
+    switch (selectedFeature) {
       case "avg-pay":
         featLabel = "Average Pay";
         break;
