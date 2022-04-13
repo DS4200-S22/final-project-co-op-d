@@ -56,7 +56,7 @@ d3.csv('data/coops.csv').then(data => {
     // Company Scatter Plot:
 
     const svg_company_scatter_plot = d3.select('#company-scatter-plot').append('svg')
-    .attr("viewBox", "0 0 600 400")
+      .attr("viewBox", "0 0 600 400")
       .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
       .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
       .style('display', 'block')
@@ -274,7 +274,7 @@ d3.csv('data/coops.csv').then(data => {
   const payDistribution = () => {
 
     const svg_pay = d3.select('#pay-distribution').append('svg')
-    .attr("viewBox", "0 0 400 300")
+      .attr("viewBox", "0 0 400 300")
       .attr('width', WIDTH_S + MARGIN.LEFT + MARGIN.RIGHT)
       .attr('height', HEIGHT_S + MARGIN.TOP + MARGIN.BOTTOM)
       .style('display', 'block')
@@ -398,7 +398,7 @@ d3.csv('data/coops.csv').then(data => {
   const locationDistribution = () => {
     // Location Distribution:
     const svg_loc = d3.select('#location-bars').append('svg')
-    .attr("viewBox", "0 0 600 400")
+      .attr("viewBox", "0 0 600 400")
       .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
       .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
       .style('display', 'block')
@@ -550,7 +550,7 @@ d3.csv('data/coops.csv').then(data => {
 
     // College Distribution:
     const svg_college = d3.select('#college-bars').append('svg')
-    .attr("viewBox", "0 0 600 400")
+      .attr("viewBox", "0 0 600 400")
       .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
       .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
       .style('display', 'block')
@@ -571,7 +571,7 @@ d3.csv('data/coops.csv').then(data => {
     // Y Label:
     g_college.append('text')
       .attr('class', 'y axis-label')
-      .attr('x', -(HEIGHT_S / 2))
+      .attr('x', -(HEIGHT_S / 2) - 40)
       .attr('y', -30)
       .attr('font-size', '15px')
       .attr('text-anchor', 'middle')
@@ -705,12 +705,17 @@ d3.csv('data/coops.csv').then(data => {
       college_d.push(dict);
     }
 
+    console.log(college_d);
+
     const keys_college = ['SocialScienceAndHumanities', 'Engineering', 'Science',
       'ArtMediaAndDesign', 'Business', 'Khoury'];
 
     college_d.sort(function (a, b) { return b.total - a.total; });
     x_college.domain(college_d.map(function (d) { return d.Coop; }));
-    y_college.domain([0, d3.max(college_d, function (d) { return d.total; })]);
+    y_college.domain([0, d3.max(college_d, function (d) {
+      vals = [d.SocialScienceAndHumanities, d.Engineering, d.Science, d.ArtMediaAndDesign, d.Busienss, d.Khoury]; 
+      return d3.max(vals);
+    })]);
     z_college.domain(keys_college);
 
     const xSubgroup = d3.scaleBand().domain(keys_college).range([0, x_college.bandwidth()])
