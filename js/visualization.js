@@ -14,6 +14,7 @@ d3.csv('data/coops.csv').then(data => {
     d.nThCoop = String(d.nThCoop);
   });
 
+  // overall data preparation
   data = data.filter(d => d.isCoop === 'TRUE' && d.isPayVisible === 'TRUE');
   const globalData = JSON.parse(JSON.stringify(data)); // deep copy
   let scatterPlotData = globalData;
@@ -21,6 +22,7 @@ d3.csv('data/coops.csv').then(data => {
 
   d3.select('#current-company').text('Currently Selected: All Companies In Scatter Plot');
 
+  // removes current graphs and regenerates graphs with presumably new parameters and filters
   const updateGraphs = () => {
     d3.select('#company-scatter-plot').select('svg').remove();
     d3.select('#company-scatter-plot').select('#tooltip').remove();
@@ -35,6 +37,7 @@ d3.csv('data/coops.csv').then(data => {
     collegeDistribution();
   };
 
+  // resets graphs to original state to display all companies
   const resetBarGraphs = () => {
     scatterPlotData = globalData;
     tempData = scatterPlotData;
@@ -51,10 +54,9 @@ d3.csv('data/coops.csv').then(data => {
     filters.nTh = '';
   };
 
+
+  // Company Scatter Plot 
   const companyScatterPlot = () => {
-
-    // Company Scatter Plot:
-
     const svg_company_scatter_plot = d3.select('#company-scatter-plot').append('svg')
       .attr("viewBox", "0 0 600 400")
       .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
@@ -66,7 +68,6 @@ d3.csv('data/coops.csv').then(data => {
       .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
 
     // X Label:
-
     g_company_scatter_plot.append('text')
       .attr('class', 'x axis-label')
       .attr('x', WIDTH / 2)
@@ -76,7 +77,6 @@ d3.csv('data/coops.csv').then(data => {
       .text('Average Pay');
 
     // Y Label
-
     g_company_scatter_plot.append('text')
       .attr('class', 'y axis-label')
       .attr('x', -(HEIGHT / 2))
@@ -131,7 +131,6 @@ d3.csv('data/coops.csv').then(data => {
       .call(yAxisCall);
 
     // Tooltip:
-
     const tooltip = d3.select('#company-scatter-plot')
       .append('div')
       .attr('id', 'tooltip')
@@ -144,9 +143,9 @@ d3.csv('data/coops.csv').then(data => {
     const mouseover = (event, d) => {
       tooltip.html(
         `Name: ${d[0].company}
-<br>Average Pay: $${Math.round(d.averagePay * 100) / 100}
-<br>Average Rating: ${Math.round(d.averageRating * 100) / 100}
-<br>Number of Reviews: ${d.length}`)
+        <br>Average Pay: $${Math.round(d.averagePay * 100) / 100}
+        <br>Average Rating: ${Math.round(d.averageRating * 100) / 100}
+        <br>Number of Reviews: ${d.length}`)
         .style('opacity', 1);
     };
 
@@ -193,7 +192,6 @@ d3.csv('data/coops.csv').then(data => {
   companyScatterPlot();
 
   // Rating Distribution:
-
   const ratingDistribution = () => {
     const svg_rating = d3.select('#rating-distribution').append('svg')
       .attr("viewBox", "0 0 400 300")
@@ -270,7 +268,6 @@ d3.csv('data/coops.csv').then(data => {
   ratingDistribution();
 
   // Pay Distribution:
-
   const payDistribution = () => {
 
     const svg_pay = d3.select('#pay-distribution').append('svg')
@@ -305,6 +302,7 @@ d3.csv('data/coops.csv').then(data => {
     const payMap = d3.rollup(tempData, v => v.length, d => d.pay);
     const compensations = [];
 
+    // buckets data into histogram ranges
     for (const [key, value] of payMap) {
       let nonPaid = 0;
       let to15 = 0;
@@ -384,9 +382,11 @@ d3.csv('data/coops.csv').then(data => {
 
   payDistribution();
 
-  let curFeature = "";
-  let featLabel = "Co-op Count";
+  // feature selection functionality: 
+  let curFeature = ""; // value of the type of data being currently displayed
+  let featLabel = "Co-op Count"; // label to be shown on graphs
 
+  // finds the average value for the given key across dictionaries in dictList 
   function getAvgOfKey(dictList, key) {
     let total = 0;
     for (const entry of dictList) {
@@ -395,8 +395,8 @@ d3.csv('data/coops.csv').then(data => {
     return total / dictList.length;
   }
 
+  // Location Distribution:
   const locationDistribution = () => {
-    // Location Distribution:
     const svg_loc = d3.select('#location-bars').append('svg')
       .attr("viewBox", "0 0 600 400")
       .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
@@ -427,8 +427,11 @@ d3.csv('data/coops.csv').then(data => {
     const z_loc = d3.scaleOrdinal()
       .range(['#324c80', '#4e8032', '#ada547']);
 
+    // Group data by state and nth co-op
     const groupByStateNthCoop = d3.group(tempData, d => d.state, d => d.nThCoop);
     const loc_d = [];
+
+    // Aggregates data to contain values of the currently selected feature
     for (const [key, value] of groupByStateNthCoop.entries()) {
       const dict = {};
       dict.Location = key;
@@ -521,6 +524,7 @@ d3.csv('data/coops.csv').then(data => {
       .attr('transform', 'translate(0,' + HEIGHT + ')')
       .call(d3.axisBottom(x_loc).ticks(null, 's'));
 
+    // Location legend
     const legend_loc = g_loc.append('g')
       .attr('font-family', 'sans-serif')
       .attr('font-size', 10)
@@ -546,9 +550,8 @@ d3.csv('data/coops.csv').then(data => {
 
   locationDistribution();
 
+  // College Distribution:
   const collegeDistribution = () => {
-
-    // College Distribution:
     const svg_college = d3.select('#college-bars').append('svg')
       .attr("viewBox", "0 0 600 400")
       .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
@@ -588,8 +591,11 @@ d3.csv('data/coops.csv').then(data => {
     const z_college = d3.scaleOrdinal()
       .range(['#e41a1c', '#377eb8', '#4daf4a', '#ffff00', '#ffa500', '#6a0dad']);
 
+    // Groups data by nth coop and college
     const groupByCollegeNthCoop = d3.group(tempData, d => d.nThCoop, d => d.college);
     const college_d = [];
+
+    // aggregates data with values of the currently selected feature
     for (const [key, value] of groupByCollegeNthCoop.entries()) {
       const dict = {};
       dict.Coop = key;
@@ -713,7 +719,7 @@ d3.csv('data/coops.csv').then(data => {
     college_d.sort(function (a, b) { return b.total - a.total; });
     x_college.domain(college_d.map(function (d) { return d.Coop; }));
     y_college.domain([0, d3.max(college_d, function (d) {
-      vals = [d.SocialScienceAndHumanities, d.Engineering, d.Science, d.ArtMediaAndDesign, d.Busienss, d.Khoury]; 
+      vals = [d.SocialScienceAndHumanities, d.Engineering, d.Science, d.ArtMediaAndDesign, d.Busienss, d.Khoury];
       return d3.max(vals);
     })]);
     z_college.domain(keys_college);
@@ -771,12 +777,14 @@ d3.csv('data/coops.csv').then(data => {
 
   collegeDistribution();
 
+  // college scatterplot data filters
   const filters = {
     college: '',
     location: '',
     nth: '',
   };
 
+  // called when "Apply" button is pressed
   const applyFilters = () => {
     scatterPlotData = globalData;
     if (filters.college !== '') {
@@ -794,6 +802,7 @@ d3.csv('data/coops.csv').then(data => {
 
   d3.select('#apply-button').on('click', applyFilters);
 
+  // gets college filter values and updates filters
   function filterByCollege() {
     const select = document.getElementById('collegeFilter');
     const option = select.options[select.selectedIndex];
@@ -817,7 +826,7 @@ d3.csv('data/coops.csv').then(data => {
   d3.select('#nThFilter').on('change', filterByNthCoop);
 
   // Feature Selection --------------------
-  // A function that update the chart
+  // A function that updates the graphs with selected feature data and updates the labels
   function updateFeature(selectedFeature) {
     curFeature = selectedFeature;
 
@@ -834,6 +843,7 @@ d3.csv('data/coops.csv').then(data => {
     updateGraphs();
   }
 
+  // upon the changing of the feature through the select
   d3.select("#feature-select").on("change", function (event, d) {
     // recover the option that has been chosen
     const selectedFeature = d3.select(this).property("value")
