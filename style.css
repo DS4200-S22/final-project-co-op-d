@@ -35,9 +35,18 @@ h1, h2, h3 {
     padding: 5px;
 }
 
-.pay-rating-container {
+.college-location-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 5px;
+}
+
+.vertical-container {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
+    padding: 5px;
 }
 
 /* Full-width and Full-height */
