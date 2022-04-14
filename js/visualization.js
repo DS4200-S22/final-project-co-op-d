@@ -514,6 +514,42 @@ d3.csv('data/coops.csv').then(data => {
       .attr('width', function (d) { return x_loc(d[1]) - x_loc(d[0]); })
       .attr('height', y_loc.bandwidth());
 
+      g_loc.selectAll("rect").each(function(d,i){
+          d3.select(this).on('mousemove',()=>{ 
+            //console.log(d);
+            // console.log(d[1]);
+            let coopnum = d[1] - d[0];
+            if (coopnum == d.data.First){
+              HighlightCompany(d.data, 1); 
+            }
+            if (coopnum == d.data.Second){
+              HighlightCompany(d.data, 2);
+            }
+            if(coopnum == d.data.Third){
+              HighlightCompany(d.data, 3);
+            }
+                d3.select(this).attr("stroke","black").attr("stroke-width", 1.5)
+               })
+        .on('mouseleave', function () {
+              d3.selectAll('rect')
+                    .attr("stroke-width", 0)
+                               
+              d3.selectAll('circle')
+                    .attr('stroke', 'black')
+                    .attr('stroke-width', '1px')
+                });
+    })
+
+    function HighlightCompany(data, coop){
+      d3.selectAll("circle").each(function(d,i){
+        if(d[0].state.includes(data.Location) && d[0].nThCoop == coop){
+          d3.select(this).attr("stroke", "red").attr("stroke-width", 2);
+
+
+        }
+      })
+    }
+
     g_loc.append('g')
       .attr('class', 'axis')
       .attr('transform', 'translate(0,0)')
@@ -606,10 +642,10 @@ d3.csv('data/coops.csv').then(data => {
       switch (curFeature) {
         case "avg-pay":
           if (nthKeys.includes('College of Social Sciences and Humanities')) {
-            dict.SocialScienceAndHumanities =
+            dict.Humanities =
               getAvgOfKey(currentCoop.get('College of Social Sciences and Humanities'), 'pay');
           } else {
-            dict.SocialScienceAndHumanities = 0;
+            dict.Humanities = 0;
           }
           if (nthKeys.includes('College of Engineering')) {
             dict.Engineering = getAvgOfKey(currentCoop.get('College of Engineering'), 'pay');
@@ -622,9 +658,9 @@ d3.csv('data/coops.csv').then(data => {
             dict.Science = 0;
           }
           if (nthKeys.includes('College of Arts, Media and Design')) {
-            dict.ArtMediaAndDesign = getAvgOfKey(currentCoop.get('College of Arts, Media and Design'), 'pay');
+            dict.Design = getAvgOfKey(currentCoop.get('College of Arts, Media and Design'), 'pay');
           } else {
-            dict.ArtMediaAndDesign = 0;
+            dict.Design = 0;
           }
           if (nthKeys.includes('D\'Amore-McKim School of Business')) {
             dict.Business = getAvgOfKey(currentCoop.get('D\'Amore-McKim School of Business'), 'pay');
@@ -639,10 +675,10 @@ d3.csv('data/coops.csv').then(data => {
           break;
         case "avg-rate":
           if (nthKeys.includes('College of Social Sciences and Humanities')) {
-            dict.SocialScienceAndHumanities =
+            dict.Humanities =
               getAvgOfKey(currentCoop.get('College of Social Sciences and Humanities'), 'rating');
           } else {
-            dict.SocialScienceAndHumanities = 0;
+            dict.Humanities = 0;
           }
           if (nthKeys.includes('College of Engineering')) {
             dict.Engineering = getAvgOfKey(currentCoop.get('College of Engineering'), 'rating');
@@ -655,9 +691,9 @@ d3.csv('data/coops.csv').then(data => {
             dict.Science = 0;
           }
           if (nthKeys.includes('College of Arts, Media and Design')) {
-            dict.ArtMediaAndDesign = getAvgOfKey(currentCoop.get('College of Arts, Media and Design'), 'rating');
+            dict.Design = getAvgOfKey(currentCoop.get('College of Arts, Media and Design'), 'rating');
           } else {
-            dict.ArtMediaAndDesign = 0;
+            dict.Design = 0;
           }
           if (nthKeys.includes('D\'Amore-McKim School of Business')) {
             dict.Business = getAvgOfKey(currentCoop.get('D\'Amore-McKim School of Business'), 'rating');
@@ -672,10 +708,10 @@ d3.csv('data/coops.csv').then(data => {
           break;
         default:
           if (nthKeys.includes('College of Social Sciences and Humanities')) {
-            dict.SocialScienceAndHumanities =
+            dict.Humanities =
               currentCoop.get('College of Social Sciences and Humanities').length;
           } else {
-            dict.SocialScienceAndHumanities = 0;
+            dict.Humanities = 0;
           }
           if (nthKeys.includes('College of Engineering')) {
             dict.Engineering = currentCoop.get('College of Engineering').length;
@@ -688,9 +724,9 @@ d3.csv('data/coops.csv').then(data => {
             dict.Science = 0;
           }
           if (nthKeys.includes('College of Arts, Media and Design')) {
-            dict.ArtMediaAndDesign = currentCoop.get('College of Arts, Media and Design').length;
+            dict.Design = currentCoop.get('College of Arts, Media and Design').length;
           } else {
-            dict.ArtMediaAndDesign = 0;
+            dict.Design = 0;
           }
           if (nthKeys.includes('D\'Amore-McKim School of Business')) {
             dict.Business = currentCoop.get('D\'Amore-McKim School of Business').length;
@@ -705,21 +741,19 @@ d3.csv('data/coops.csv').then(data => {
       }
 
       dict.total =
-        dict.SocialScienceAndHumanities + dict.Engineering + dict.Science +
-        dict.ArtMediaAndDesign +
+        dict.Humanities + dict.Engineering + dict.Science +
+        dict.Design +
         dict.Business + dict.Khoury;
       college_d.push(dict);
     }
 
-    console.log(college_d);
-
-    const keys_college = ['SocialScienceAndHumanities', 'Engineering', 'Science',
-      'ArtMediaAndDesign', 'Business', 'Khoury'];
+    const keys_college = ['Humanities', 'Engineering', 'Science',
+      'Design', 'Business', 'Khoury'];
 
     college_d.sort(function (a, b) { return b.total - a.total; });
     x_college.domain(college_d.map(function (d) { return d.Coop; }));
     y_college.domain([0, d3.max(college_d, function (d) {
-      vals = [d.SocialScienceAndHumanities, d.Engineering, d.Science, d.ArtMediaAndDesign, d.Busienss, d.Khoury];
+      vals = [d.Humanities, d.Engineering, d.Science, d.Design, d.Busienss, d.Khoury];
       return d3.max(vals);
     })]);
     z_college.domain(keys_college);
@@ -751,6 +785,36 @@ d3.csv('data/coops.csv').then(data => {
     g_college.append('g')
       .attr('transform', 'translate(0,' + HEIGHT + ')')
       .call(d3.axisBottom(x_college).tickSize(0));
+
+    g_college.selectAll("rect").each(function(d,i){
+          d3.select(this).on('mousemove',()=>{ 
+
+        
+            let nth = Math.floor(i/6);
+                HighlightCircle(d, college_d[nth].Coop)
+                d3.select(this).attr("stroke","black").attr("stroke-width", 1.5)
+               })
+        .on('mouseleave', function () {
+              d3.selectAll('rect')
+                    .attr("stroke-width", 0)
+                               
+              d3.selectAll('circle')
+                    .attr('stroke', 'black')
+                    .attr('stroke-width', '1px')
+                });
+    })
+
+    function HighlightCircle(data, nth){
+      d3.selectAll("circle").each(function(d,i){
+        if(d[0].college.includes(data.key) && d[0].nThCoop == nth){
+          d3.select(this).attr("stroke", "red").attr("stroke-width", 2);
+
+
+        }
+      })
+    }
+
+  
 
     const legend_college = g_college.append('g')
       .attr('font-family', 'sans-serif')
@@ -852,6 +916,9 @@ d3.csv('data/coops.csv').then(data => {
   })
 
 });
+
+// Brushing & Linking for College, Location, and Companies 
+
 
 
 
