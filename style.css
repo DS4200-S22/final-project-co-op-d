@@ -49,20 +49,13 @@ h1, h2, h3 {
     padding: 5px;
 }
 
-/* Full-width and Full-height */
-.vis-holder {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-}
-
 #current-company {
     text-align: center;
 }
 
 select {
     margin: auto 5px;
-    width: 150px;
+    width: 180px;
     padding: 5px 35px 5px 5px;
     font-size: 16px;
     border: 1px solid #CCC;
@@ -162,4 +155,8 @@ button:active {
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
+}
+
+#feature-select-label {
+    font-weight: bold;
 }
