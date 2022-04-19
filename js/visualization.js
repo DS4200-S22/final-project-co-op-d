@@ -1,6 +1,6 @@
-const MARGIN = { LEFT: 100, RIGHT: 10, TOP: 10, BOTTOM: 130 };
-const WIDTH = 600 - MARGIN.LEFT - MARGIN.RIGHT;
-const HEIGHT = 400 - MARGIN.TOP - MARGIN.BOTTOM;
+const MARGIN = { LEFT: 100, RIGHT: 25, TOP: 25, BOTTOM: 75 };
+const WIDTH = 640 - MARGIN.LEFT - MARGIN.RIGHT;
+const HEIGHT = 360 - MARGIN.TOP - MARGIN.BOTTOM;
 const WIDTH_S = 400 - MARGIN.LEFT - MARGIN.RIGHT;
 const HEIGHT_S = 300 - MARGIN.TOP - MARGIN.BOTTOM;
 const yTooltipOffset = 10;
@@ -20,7 +20,7 @@ d3.csv('data/coops.csv').then(data => {
   let scatterPlotData = globalData;
   let tempData = scatterPlotData;
 
-  d3.select('#current-company').text('Currently Selected: All Companies In Scatter Plot');
+  d3.select('#current-company').text('Currently Selected: All Companies In Scatterplot');
 
   // removes current graphs and regenerates graphs with presumably new parameters and filters
   const updateGraphs = () => {
@@ -43,7 +43,7 @@ d3.csv('data/coops.csv').then(data => {
     tempData = scatterPlotData;
     updateFeature('coop-count');
     updateGraphs();
-    d3.select('#current-company').text('Currently Selected: All Companies In Scatter Plot');
+    d3.select('#current-company').text('Currently Selected: All Companies In Scatterplot');
     const selectCollege = document.getElementById('collegeFilter');
     const selectLocation = document.getElementById('locationFilter');
     const selectNth = document.getElementById('nThFilter');
@@ -57,14 +57,11 @@ d3.csv('data/coops.csv').then(data => {
     filters.nTh = '';
   };
 
-  // Company Scatter Plot
+  // Company Scatterplot
   const companyScatterPlot = () => {
     const svg_company_scatter_plot = d3.select('#company-scatter-plot').append('svg')
-        .attr('viewBox', '0 0 600 400')
-        .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
-        .style('display', 'block')
-        .style('margin', 'auto')
+        .attr('viewBox', '0 0 640 360')
+        .attr('preserveAspectRatio', 'xMidYMid meet')
         .style('background-color', '#fafafa');
 
     const g_company_scatter_plot = svg_company_scatter_plot.append('g')
@@ -77,7 +74,7 @@ d3.csv('data/coops.csv').then(data => {
         .attr('y', HEIGHT + 50)
         .attr('font-size', '20px')
         .attr('text-anchor', 'middle')
-        .text('Average Pay');
+        .text('Average Pay ($/hr)');
 
     // Y Label
     g_company_scatter_plot.append('text')
@@ -198,10 +195,7 @@ d3.csv('data/coops.csv').then(data => {
   const ratingDistribution = () => {
     const svg_rating = d3.select('#rating-distribution').append('svg')
         .attr('viewBox', '0 0 400 300')
-        .attr('width', WIDTH_S + MARGIN.LEFT + MARGIN.RIGHT)
-        .attr('height', HEIGHT_S + MARGIN.TOP + MARGIN.BOTTOM)
-        .style('display', 'block')
-        .style('margin', 'auto')
+        .attr('preserveAspectRatio', 'xMidYMid meet')
         .style('background-color', '#fafafa');
 
     const g_rating = svg_rating.append('g')
@@ -276,10 +270,7 @@ d3.csv('data/coops.csv').then(data => {
 
     const svg_pay = d3.select('#pay-distribution').append('svg')
         .attr('viewBox', '0 0 400 300')
-        .attr('width', WIDTH_S + MARGIN.LEFT + MARGIN.RIGHT)
-        .attr('height', HEIGHT_S + MARGIN.TOP + MARGIN.BOTTOM)
-        .style('display', 'block')
-        .style('margin', 'auto')
+        .attr('preserveAspectRatio', 'xMidYMid meet')
         .style('background-color', '#fafafa');
 
     const g_pay = svg_pay.append('g')
@@ -403,11 +394,8 @@ d3.csv('data/coops.csv').then(data => {
   // Location Distribution:
   const locationDistribution = () => {
     const svg_loc = d3.select('#location-bars').append('svg')
-        .attr('viewBox', '0 0 600 400')
-        .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
-        .style('display', 'block')
-        .style('margin', 'auto')
+        .attr('viewBox', '0 0 640 360')
+        .attr('preserveAspectRatio', 'xMidYMid meet')
         .style('background-color', '#fafafa');
 
     const g_loc = svg_loc.append('g')
@@ -518,7 +506,8 @@ d3.csv('data/coops.csv').then(data => {
         .attr('y', function (d) { return y_loc(d.data.Location); })
         .attr('x', function (d) { return x_loc(d[0]); })
         .attr('width', function (d) { return x_loc(d[1]) - x_loc(d[0]); })
-        .attr('height', y_loc.bandwidth());
+        .attr('height', y_loc.bandwidth())
+        .style('cursor', 'pointer');
 
     g_loc.selectAll('rect').each(function (d) {
       d3.select(this).on('mousemove', () => {
@@ -594,11 +583,8 @@ d3.csv('data/coops.csv').then(data => {
   // College Distribution:
   const collegeDistribution = () => {
     const svg_college = d3.select('#college-bars').append('svg')
-        .attr('viewBox', '0 0 600 400')
-        .attr('width', WIDTH + MARGIN.LEFT + MARGIN.RIGHT)
-        .attr('height', HEIGHT + MARGIN.TOP + MARGIN.BOTTOM)
-        .style('display', 'block')
-        .style('margin', 'auto')
+        .attr('viewBox', '0 0 640 360')
+        .attr('preserveAspectRatio', 'xMidYMid meet')
         .style('background-color', '#fafafa');
 
     const g_college = svg_college.append('g')
@@ -786,7 +772,8 @@ d3.csv('data/coops.csv').then(data => {
         .attr('y', function (d) { return y_college(d.value); })
         .attr('width', xSubgroup.bandwidth())
         .attr('height', function (d) { return HEIGHT - y_college(d.value); })
-        .attr('fill', function (d) { return z_college(d.key); });
+        .attr('fill', function (d) { return z_college(d.key); })
+        .style('cursor', 'pointer');
 
     g_college.append('g')
         .attr('class', 'axis')
@@ -848,7 +835,7 @@ d3.csv('data/coops.csv').then(data => {
 
   collegeDistribution();
 
-  // college scatter plot data filters
+  // college scatterplot data filters
   const filters = {
     college: '',
     location: '',
@@ -903,7 +890,7 @@ d3.csv('data/coops.csv').then(data => {
 
     switch (selectedFeature) {
       case 'avg-pay':
-        featLabel = 'Average Pay';
+        featLabel = 'Average Pay ($/hr)';
         break;
       case 'avg-rate':
         featLabel = 'Average Rating';
