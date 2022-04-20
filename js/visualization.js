@@ -310,7 +310,7 @@ d3.csv('data/coops.csv').then(data => {
       .attr('y', d => yRating(d.count))
       .attr('x', d => xRating(d.rating))
       .attr('width', xRating.bandwidth)
-      .attr('height', d => HEIGHT_S - yRating(d.count))
+      .attr('height', function (d) { if(d.count == null) {return 0;} else{ return HEIGHT_S - yRating(d.count); }})
       .attr('fill', 'black');
   };
 
