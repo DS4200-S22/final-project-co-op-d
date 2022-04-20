@@ -37,6 +37,18 @@ d3.csv('data/coops.csv').then(data => {
     collegeDistribution();
   };
 
+  // updateCompanySelected: updates all graphs but the company scatter plot
+  const updateCompanySelected = () => {
+    d3.select('#rating-distribution').select('svg').remove();
+    d3.select('#pay-distribution').select('svg').remove();
+    d3.select('#location-bars').select('svg').remove();
+    d3.select('#college-bars').select('svg').remove();
+    payDistribution();
+    ratingDistribution();
+    locationDistribution();
+    collegeDistribution();
+  };
+
   // resets graphs to original state to display all companies
   const resetBarGraphs = () => {
     scatterPlotData = globalData;
@@ -60,31 +72,31 @@ d3.csv('data/coops.csv').then(data => {
   // Company Scatterplot
   const companyScatterPlot = () => {
     const svg_company_scatter_plot = d3.select('#company-scatter-plot').append('svg')
-        .attr('viewBox', '0 0 640 360')
-        .attr('preserveAspectRatio', 'xMidYMid meet')
-        .style('background-color', '#fafafa');
+      .attr('viewBox', '0 0 640 360')
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('background-color', '#fafafa');
 
     const g_company_scatter_plot = svg_company_scatter_plot.append('g')
-        .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+      .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
 
     // X Label:
     g_company_scatter_plot.append('text')
-        .attr('class', 'x axis-label')
-        .attr('x', WIDTH / 2)
-        .attr('y', HEIGHT + 50)
-        .attr('font-size', '20px')
-        .attr('text-anchor', 'middle')
-        .text('Average Pay ($/hr)');
+      .attr('class', 'x axis-label')
+      .attr('x', WIDTH / 2)
+      .attr('y', HEIGHT + 50)
+      .attr('font-size', '20px')
+      .attr('text-anchor', 'middle')
+      .text('Average Pay ($/hr)');
 
     // Y Label
     g_company_scatter_plot.append('text')
-        .attr('class', 'y axis-label')
-        .attr('x', -(HEIGHT / 2))
-        .attr('y', -60)
-        .attr('font-size', '20px')
-        .attr('text-anchor', 'middle')
-        .attr('transform', 'rotate(-90)')
-        .text('Average Rating');
+      .attr('class', 'y axis-label')
+      .attr('x', -(HEIGHT / 2))
+      .attr('y', -60)
+      .attr('font-size', '20px')
+      .attr('text-anchor', 'middle')
+      .attr('transform', 'rotate(-90)')
+      .text('Average Rating');
 
     const groupedByCompany = d3.group(scatterPlotData, d => d.company);
 
@@ -111,48 +123,48 @@ d3.csv('data/coops.csv').then(data => {
 
     const maxRating = d3.max(arrayOfAverageRating);
 
-    const x = d3.scaleLinear()
-        .domain([ minPay, maxPay ])
-        .range([ 0, WIDTH ]);
+    var x = d3.scaleLinear()
+      .domain([minPay, maxPay+3])
+      .range([0, WIDTH]);
 
-    const y = d3.scaleLinear()
-        .domain([ 1, maxRating ])
-        .range([ HEIGHT, 0 ]);
+    var y = d3.scaleLinear()
+      .domain([1, maxRating+ 0.25])
+      .range([HEIGHT, 0]);
 
     const xAxisCall = d3.axisBottom(x);
-    g_company_scatter_plot.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', `translate(0, ${ HEIGHT })`)
-        .call(xAxisCall);
+    var xAxis = g_company_scatter_plot.append('g')
+      .attr('class', 'x axis')
+      .attr('transform', `translate(0, ${HEIGHT})`)
+      .call(xAxisCall);
 
     const yAxisCall = d3.axisLeft(y);
-    g_company_scatter_plot.append('g')
-        .attr('class', 'y axis')
-        .call(yAxisCall);
+    var yAxis = g_company_scatter_plot.append('g')
+      .attr('class', 'y axis')
+      .call(yAxisCall);
 
     // Tooltip:
     const tooltip = d3.select('#company-scatter-plot')
-        .append('div')
-        .attr('id', 'tooltip')
-        .style('opacity', 0)
-        .style('border', 'solid')
-        .style('border-color', 'black')
-        .style('text-align', 'center')
-        .attr('class', 'tooltip');
+      .append('div')
+      .attr('id', 'tooltip')
+      .style('opacity', 0)
+      .style('border', 'solid')
+      .style('border-color', 'black')
+      .style('text-align', 'center')
+      .attr('class', 'tooltip');
 
     const mouseover = (event, d) => {
       tooltip.html(
-          `Name: ${ d[0].company }
-        <br>Average Pay: $${ Math.round(d.averagePay * 100) / 100 }
-        <br>Average Rating: ${ Math.round(d.averageRating * 100) / 100 }
-        <br>Number of Reviews: ${ d.length }`)
-          .style('opacity', 1);
+        `Name: ${d[0].company}
+        <br>Average Pay: $${Math.round(d.averagePay * 100) / 100}
+        <br>Average Rating: ${Math.round(d.averageRating * 100) / 100}
+        <br>Number of Reviews: ${d.length}`)
+        .style('opacity', 1);
     };
 
     const mousemove = (event) => {
       // change the location data of the cursor
       tooltip.style('left', (event.pageX) + 'px')
-          .style('top', (event.pageY + yTooltipOffset) + 'px');
+        .style('top', (event.pageY + yTooltipOffset) + 'px');
     };
 
     const mouseleave = () => {
@@ -164,28 +176,67 @@ d3.csv('data/coops.csv').then(data => {
      */
     const scatterPlotMouseUp = (event, company) => {
       tempData = scatterPlotData.filter(d => d.company === company[0].company);
-      updateGraphs();
-      d3.select('#current-company').text(`Currently Selected: ${ company[0].company }`);
+      updateCompanySelected();
+      d3.select('#current-company').text(`Currently Selected: ${company[0].company}`);
     };
 
     d3.select('#reset-button').on('click', resetBarGraphs);
 
+    // Create the scatter variable: where both the circles and the brush take place
+    var scatter = g_company_scatter_plot.append('g')
+      .attr("clip-path", "url(#clip)")
+
     // Circles:
-    g_company_scatter_plot.selectAll('circle')
-        .data(groupedByCompany.values())
-        .enter()
-        .append('circle')
-        .attr('cx', d => x(d.averagePay))
-        .attr('cy', d => y(d.averageRating))
-        .attr('r', d => d.length + 5)
-        .attr('fill', '#69b3a2')
-        .attr('stroke', 'black')
-        .attr('stroke-width', '1px')
-        .style('cursor', 'pointer')
-        .on('mouseover', mouseover)
-        .on('mousemove', mousemove)
-        .on('mouseleave', mouseleave)
-        .on('mouseup', scatterPlotMouseUp);
+    scatter.selectAll('circle')
+      .data(groupedByCompany.values())
+      .enter()
+      .append('circle')
+      .attr('cx', d => x(d.averagePay))
+      .attr('cy', d => y(d.averageRating))
+      .attr('r', d => d.length + 5)
+      .attr('fill', '#69b3a2')
+      .attr('stroke', 'black')
+      .attr('stroke-width', '1px')
+      .style('cursor', 'pointer')
+      .on('mouseover', mouseover)
+      .on('mousemove', mousemove)
+      .on('mouseleave', mouseleave)
+      .on('click', scatterPlotMouseUp);
+
+    // Add a clipPath: everything out of this area won't be drawn.
+    var clip = g_company_scatter_plot.append("defs").append("SVG:clipPath")
+      .attr("id", "clip")
+      .append("SVG:rect")
+      .attr("width", WIDTH)
+      .attr("height", HEIGHT)
+      .attr("x", 0)
+      .attr("y", 0);
+
+    // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
+    var zoom = d3.zoom()
+      .scaleExtent([1, 10])  
+      .extent([[0, 0], [WIDTH, HEIGHT]])
+      .on("zoom", zoomChart);
+
+    svg_company_scatter_plot.call(zoom);
+
+    // A function that updates the chart when the user zoom and thus new boundaries are available
+    function zoomChart(event, d) {
+
+      // recover the new scale
+      var newX = event.transform.rescaleX(x);
+      var newY = event.transform.rescaleY(y);
+
+      // update axes with these new boundaries
+      xAxis.call(d3.axisBottom(newX))
+      yAxis.call(d3.axisLeft(newY))
+
+      // update circle position
+      scatter
+        .selectAll("circle")
+        .attr('cx', d => newX(d.averagePay))
+        .attr('cy', d => newY(d.averageRating))
+    }
 
   };
 
@@ -194,31 +245,31 @@ d3.csv('data/coops.csv').then(data => {
   // Rating Distribution:
   const ratingDistribution = () => {
     const svg_rating = d3.select('#rating-distribution').append('svg')
-        .attr('viewBox', '0 0 400 300')
-        .attr('preserveAspectRatio', 'xMidYMid meet')
-        .style('background-color', '#fafafa');
+      .attr('viewBox', '0 0 400 300')
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('background-color', '#fafafa');
 
     const g_rating = svg_rating.append('g')
-        .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+      .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
 
     // X Label
     g_rating.append('text')
-        .attr('class', 'x axis-label')
-        .attr('x', WIDTH_S / 2)
-        .attr('y', HEIGHT_S + 40)
-        .attr('font-size', '15px')
-        .attr('text-anchor', 'middle')
-        .text('Stars');
+      .attr('class', 'x axis-label')
+      .attr('x', WIDTH_S / 2)
+      .attr('y', HEIGHT_S + 40)
+      .attr('font-size', '15px')
+      .attr('text-anchor', 'middle')
+      .text('Stars');
 
     // Y label
     g_rating.append('text')
-        .attr('class', 'y axis-label')
-        .attr('x', -(HEIGHT_S / 2))
-        .attr('y', -30)
-        .attr('font-size', '15px')
-        .attr('text-anchor', 'middle')
-        .attr('transform', 'rotate(-90)')
-        .text('Count');
+      .attr('class', 'y axis-label')
+      .attr('x', -(HEIGHT_S / 2))
+      .attr('y', -30)
+      .attr('font-size', '15px')
+      .attr('text-anchor', 'middle')
+      .attr('transform', 'rotate(-90)')
+      .text('Count');
 
     const ratingMap = d3.rollup(tempData, v => v.length, d => d.rating);
 
@@ -231,36 +282,36 @@ d3.csv('data/coops.csv').then(data => {
       { 'rating': 3.5, 'count': ratingMap.get(3.5) },
       { 'rating': 4, 'count': ratingMap.get(4) },
       { 'rating': 4.5, 'count': ratingMap.get(4.5) },
-      { 'rating': 5, 'count': ratingMap.get(5) } ];
+      { 'rating': 5, 'count': ratingMap.get(5) }];
 
     const xRating = d3.scaleBand()
-        .domain(ratings.map(d => d.rating))
-        .range([ 0, WIDTH_S ]);
+      .domain(ratings.map(d => d.rating))
+      .range([0, WIDTH_S]);
 
     const yRating = d3.scaleLinear()
-        .domain([ 0, d3.max(ratings, d => d.count) ])
-        .range([ HEIGHT_S, 0 ]);
+      .domain([0, d3.max(ratings, d => d.count)])
+      .range([HEIGHT_S, 0]);
 
     const xAxisCallRating = d3.axisBottom(xRating);
     g_rating.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', `translate(0, ${ HEIGHT_S })`)
-        .call(xAxisCallRating);
+      .attr('class', 'x axis')
+      .attr('transform', `translate(0, ${HEIGHT_S})`)
+      .call(xAxisCallRating);
 
     const yAxisCallRating = d3.axisLeft(yRating);
     g_rating.append('g')
-        .attr('class', 'y axis')
-        .call(yAxisCallRating);
+      .attr('class', 'y axis')
+      .call(yAxisCallRating);
 
     const rects = g_rating.selectAll('rect')
-        .data(ratings);
+      .data(ratings);
 
     rects.enter().append('rect')
-        .attr('y', d => yRating(d.count))
-        .attr('x', d => xRating(d.rating))
-        .attr('width', xRating.bandwidth)
-        .attr('height', d => HEIGHT_S - yRating(d.count))
-        .attr('fill', 'black');
+      .attr('y', d => yRating(d.count))
+      .attr('x', d => xRating(d.rating))
+      .attr('width', xRating.bandwidth)
+      .attr('height', d => HEIGHT_S - yRating(d.count))
+      .attr('fill', 'black');
   };
 
   ratingDistribution();
@@ -269,37 +320,37 @@ d3.csv('data/coops.csv').then(data => {
   const payDistribution = () => {
 
     const svg_pay = d3.select('#pay-distribution').append('svg')
-        .attr('viewBox', '0 0 400 300')
-        .attr('preserveAspectRatio', 'xMidYMid meet')
-        .style('background-color', '#fafafa');
+      .attr('viewBox', '0 0 400 300')
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('background-color', '#fafafa');
 
     const g_pay = svg_pay.append('g')
-        .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+      .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
 
     // X Label
     g_pay.append('text')
-        .attr('class', 'x axis-label')
-        .attr('x', WIDTH_S / 2)
-        .attr('y', HEIGHT_S + 40)
-        .attr('font-size', '15px')
-        .attr('text-anchor', 'middle')
-        .text('Pay ($/hr)');
+      .attr('class', 'x axis-label')
+      .attr('x', WIDTH_S / 2)
+      .attr('y', HEIGHT_S + 40)
+      .attr('font-size', '15px')
+      .attr('text-anchor', 'middle')
+      .text('Pay ($/hr)');
 
     // Y label
     g_pay.append('text')
-        .attr('class', 'y axis-label')
-        .attr('x', -(HEIGHT_S / 2))
-        .attr('y', -30)
-        .attr('font-size', '15px')
-        .attr('text-anchor', 'middle')
-        .attr('transform', 'rotate(-90)')
-        .text('Count');
+      .attr('class', 'y axis-label')
+      .attr('x', -(HEIGHT_S / 2))
+      .attr('y', -30)
+      .attr('font-size', '15px')
+      .attr('text-anchor', 'middle')
+      .attr('transform', 'rotate(-90)')
+      .text('Count');
 
     const payMap = d3.rollup(tempData, v => v.length, d => d.pay);
     const compensations = [];
 
     // buckets data into histogram ranges
-    for (const [ key, value ] of payMap) {
+    for (const [key, value] of payMap) {
       let nonPaid = 0;
       let to15 = 0;
       let to20 = 0;
@@ -333,46 +384,46 @@ d3.csv('data/coops.csv').then(data => {
         over50 += value;
       }
       compensations.push(
-          { 'pay': '0', 'count': nonPaid },
-          { 'pay': '<15', 'count': to15 },
-          { 'pay': '15-20', 'count': to20 },
-          { 'pay': '20-25', 'count': to25 },
-          { 'pay': '25-30', 'count': to30 },
-          { 'pay': '30-35', 'count': to35 },
-          { 'pay': '35-40', 'count': to40 },
-          { 'pay': '40-45', 'count': to45 },
-          { 'pay': '45-50', 'count': to50 },
-          { 'pay': '>50', 'count': over50 });
+        { 'pay': '0', 'count': nonPaid },
+        { 'pay': '<15', 'count': to15 },
+        { 'pay': '15-20', 'count': to20 },
+        { 'pay': '20-25', 'count': to25 },
+        { 'pay': '25-30', 'count': to30 },
+        { 'pay': '30-35', 'count': to35 },
+        { 'pay': '35-40', 'count': to40 },
+        { 'pay': '40-45', 'count': to45 },
+        { 'pay': '45-50', 'count': to50 },
+        { 'pay': '>50', 'count': over50 });
     }
 
     const xPay = d3.scaleBand()
-        .domain(compensations.map(d => d.pay))
-        .range([ 0, WIDTH_S ]);
+      .domain(compensations.map(d => d.pay))
+      .range([0, WIDTH_S]);
 
     const yPay = d3.scaleLinear()
-        .domain([ 0, d3.max(compensations, d => d.count) ])
-        .range([ HEIGHT_S, 0 ]);
+      .domain([0, d3.max(compensations, d => d.count)])
+      .range([HEIGHT_S, 0]);
 
     const xAxisCallPay = d3.axisBottom(xPay);
     g_pay.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', `translate(0, ${ HEIGHT_S })`)
-        .call(xAxisCallPay);
+      .attr('class', 'x axis')
+      .attr('transform', `translate(0, ${HEIGHT_S})`)
+      .call(xAxisCallPay);
 
     const yAxisCallPay = d3.axisLeft(yPay);
     g_pay.append('g')
-        .attr('class', 'y axis')
-        .call(yAxisCallPay);
+      .attr('class', 'y axis')
+      .call(yAxisCallPay);
 
     const rects = g_pay.selectAll('rect')
-        .data(compensations);
+      .data(compensations);
 
     rects.enter().append('rect')
-        .attr('y', d => yPay(d.count))
-        .attr('x', d => xPay(d.pay))
-        .attr('width', xPay.bandwidth)
-        .attr('height', d => HEIGHT_S - yPay(d.count))
-        .attr('fill', 'black');
+      .attr('y', d => yPay(d.count))
+      .attr('x', d => xPay(d.pay))
+      .attr('width', xPay.bandwidth)
+      .attr('height', d => HEIGHT_S - yPay(d.count))
+      .attr('fill', 'black');
 
   };
 
@@ -394,39 +445,39 @@ d3.csv('data/coops.csv').then(data => {
   // Location Distribution:
   const locationDistribution = () => {
     const svg_loc = d3.select('#location-bars').append('svg')
-        .attr('viewBox', '0 0 640 360')
-        .attr('preserveAspectRatio', 'xMidYMid meet')
-        .style('background-color', '#fafafa');
+      .attr('viewBox', '0 0 640 360')
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('background-color', '#fafafa');
 
     const g_loc = svg_loc.append('g')
-        .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+      .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
 
     // X Label:
     g_loc.append('text')
-        .attr('class', 'x axis-label')
-        .attr('x', WIDTH / 2)
-        .attr('y', HEIGHT + 50)
-        .attr('font-size', '15px')
-        .attr('text-anchor', 'middle')
-        .text(featLabel);
+      .attr('class', 'x axis-label')
+      .attr('x', WIDTH / 2)
+      .attr('y', HEIGHT + 50)
+      .attr('font-size', '15px')
+      .attr('text-anchor', 'middle')
+      .text(featLabel);
 
     const y_loc = d3.scaleBand()
-        .rangeRound([ 0, HEIGHT ])
-        .paddingInner(0.05)
-        .align(0.1);
+      .rangeRound([0, HEIGHT])
+      .paddingInner(0.05)
+      .align(0.1);
 
     const x_loc = d3.scaleLinear()
-        .rangeRound([ 0, WIDTH ]);
+      .rangeRound([0, WIDTH]);
 
     const z_loc = d3.scaleOrdinal()
-        .range([ '#324c80', '#4e8032', '#ada547' ]);
+      .range(['#324c80', '#4e8032', '#ada547']);
 
     // Group data by state and nth co-op
     const groupByStateNthCoop = d3.group(tempData, d => d.state, d => d.nThCoop);
     const loc_d = [];
 
     // Aggregates data to contain values of the currently selected feature
-    for (const [ key, value ] of groupByStateNthCoop.entries()) {
+    for (const [key, value] of groupByStateNthCoop.entries()) {
       const dict = {};
       dict.Location = key;
       const currentLoc = value;
@@ -488,26 +539,26 @@ d3.csv('data/coops.csv').then(data => {
       loc_d.push(dict);
     }
 
-    const keys_loc = [ 'First', 'Second', 'Third' ];
+    const keys_loc = ['First', 'Second', 'Third'];
 
     loc_d.sort(function (a, b) { return b.total - a.total; });
     y_loc.domain(loc_d.map(function (d) { return d.Location; }));
-    x_loc.domain([ 0, d3.max(loc_d, function (d) { return d.total; }) ]).nice();
+    x_loc.domain([0, d3.max(loc_d, function (d) { return d.total; })]).nice();
     z_loc.domain(keys_loc);
 
     g_loc.append('g')
-        .selectAll('g')
-        .data(d3.stack().keys(keys_loc)(loc_d))
-        .enter().append('g')
-        .attr('fill', function (d) { return z_loc(d.key); })
-        .selectAll('rect')
-        .data(function (d) { return d; })
-        .enter().append('rect')
-        .attr('y', function (d) { return y_loc(d.data.Location); })
-        .attr('x', function (d) { return x_loc(d[0]); })
-        .attr('width', function (d) { return x_loc(d[1]) - x_loc(d[0]); })
-        .attr('height', y_loc.bandwidth())
-        .style('cursor', 'pointer');
+      .selectAll('g')
+      .data(d3.stack().keys(keys_loc)(loc_d))
+      .enter().append('g')
+      .attr('fill', function (d) { return z_loc(d.key); })
+      .selectAll('rect')
+      .data(function (d) { return d; })
+      .enter().append('rect')
+      .attr('y', function (d) { return y_loc(d.data.Location); })
+      .attr('x', function (d) { return x_loc(d[0]); })
+      .attr('width', function (d) { return x_loc(d[1]) - x_loc(d[0]); })
+      .attr('height', y_loc.bandwidth())
+      .style('cursor', 'pointer');
 
     g_loc.selectAll('rect').each(function (d) {
       d3.select(this).on('mousemove', () => {
@@ -525,14 +576,14 @@ d3.csv('data/coops.csv').then(data => {
         }
         d3.select(this).attr('stroke', 'black').attr('stroke-width', 1.5);
       })
-          .on('mouseleave', function () {
-            d3.selectAll('rect')
-                .attr('stroke-width', 0);
+        .on('mouseleave', function () {
+          d3.selectAll('rect')
+            .attr('stroke-width', 0);
 
-            d3.selectAll('circle')
-                .attr('stroke', 'black')
-                .attr('stroke-width', '1px');
-          });
+          d3.selectAll('circle')
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1px');
+        });
     });
 
     function HighlightCompany(data, coop) {
@@ -545,36 +596,36 @@ d3.csv('data/coops.csv').then(data => {
     }
 
     g_loc.append('g')
-        .attr('class', 'axis')
-        .attr('transform', 'translate(0,0)')
-        .call(d3.axisLeft(y_loc));
+      .attr('class', 'axis')
+      .attr('transform', 'translate(0,0)')
+      .call(d3.axisLeft(y_loc));
 
     g_loc.append('g')
-        .attr('class', 'axis')
-        .attr('transform', 'translate(0,' + HEIGHT + ')')
-        .call(d3.axisBottom(x_loc).ticks(null, 's'));
+      .attr('class', 'axis')
+      .attr('transform', 'translate(0,' + HEIGHT + ')')
+      .call(d3.axisBottom(x_loc).ticks(null, 's'));
 
     // Location legend
     const legend_loc = g_loc.append('g')
-        .attr('font-family', 'sans-serif')
-        .attr('font-size', 10)
-        .attr('text-anchor', 'end')
-        .selectAll('g')
-        .data(keys_loc.slice().reverse())
-        .enter().append('g')
-        .attr('transform', function (d, i) { return 'translate(-0,' + (100 + i * 20) + ')'; });
+      .attr('font-family', 'sans-serif')
+      .attr('font-size', 10)
+      .attr('text-anchor', 'end')
+      .selectAll('g')
+      .data(keys_loc.slice().reverse())
+      .enter().append('g')
+      .attr('transform', function (d, i) { return 'translate(-0,' + (100 + i * 20) + ')'; });
 
     legend_loc.append('rect')
-        .attr('x', WIDTH - 19)
-        .attr('width', 19)
-        .attr('height', 19)
-        .attr('fill', z_loc);
+      .attr('x', WIDTH - 19)
+      .attr('width', 19)
+      .attr('height', 19)
+      .attr('fill', z_loc);
 
     legend_loc.append('text')
-        .attr('x', WIDTH - 24)
-        .attr('y', 9.5)
-        .attr('dy', '0.32em')
-        .text(function (d) { return d; });
+      .attr('x', WIDTH - 24)
+      .attr('y', 9.5)
+      .attr('dy', '0.32em')
+      .text(function (d) { return d; });
 
   };
 
@@ -583,48 +634,48 @@ d3.csv('data/coops.csv').then(data => {
   // College Distribution:
   const collegeDistribution = () => {
     const svg_college = d3.select('#college-bars').append('svg')
-        .attr('viewBox', '0 0 640 360')
-        .attr('preserveAspectRatio', 'xMidYMid meet')
-        .style('background-color', '#fafafa');
+      .attr('viewBox', '0 0 640 360')
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('background-color', '#fafafa');
 
     const g_college = svg_college.append('g')
-        .attr('transform', `translate(${ MARGIN.LEFT }, ${ MARGIN.TOP })`);
+      .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`);
 
     // X Label:
     g_college.append('text')
-        .attr('class', 'x axis-label')
-        .attr('x', WIDTH / 2)
-        .attr('y', HEIGHT + 50)
-        .attr('font-size', '15px')
-        .attr('text-anchor', 'middle')
-        .text('nth Co-op');
+      .attr('class', 'x axis-label')
+      .attr('x', WIDTH / 2)
+      .attr('y', HEIGHT + 50)
+      .attr('font-size', '15px')
+      .attr('text-anchor', 'middle')
+      .text('nth Co-op');
 
     // Y Label:
     g_college.append('text')
-        .attr('class', 'y axis-label')
-        .attr('x', -(HEIGHT_S / 2) - 40)
-        .attr('y', -30)
-        .attr('font-size', '15px')
-        .attr('text-anchor', 'middle')
-        .attr('transform', 'rotate(-90)')
-        .text(featLabel);
+      .attr('class', 'y axis-label')
+      .attr('x', -(HEIGHT_S / 2) - 40)
+      .attr('y', -30)
+      .attr('font-size', '15px')
+      .attr('text-anchor', 'middle')
+      .attr('transform', 'rotate(-90)')
+      .text(featLabel);
 
     const x_college = d3.scaleBand()
-        .range([ 0, WIDTH ])
-        .paddingInner(0.2);
+      .range([0, WIDTH])
+      .paddingInner(0.2);
 
     const y_college = d3.scaleLinear()
-        .range([ HEIGHT, 0 ]);
+      .range([HEIGHT, 0]);
 
     const z_college = d3.scaleOrdinal()
-        .range([ '#e41a1c', '#377eb8', '#4daf4a', '#ffff00', '#ffa500', '#6a0dad' ]);
+      .range(['#e41a1c', '#377eb8', '#4daf4a', '#ffff00', '#ffa500', '#6a0dad']);
 
     // Groups data by nth coop and college
     const groupByCollegeNthCoop = d3.group(tempData, d => d.nThCoop, d => d.college);
     const college_d = [];
 
     // aggregates data with values of the currently selected feature
-    for (const [ key, value ] of groupByCollegeNthCoop.entries()) {
+    for (const [key, value] of groupByCollegeNthCoop.entries()) {
       const dict = {};
       dict.Coop = key;
       const currentCoop = value;
@@ -635,7 +686,7 @@ d3.csv('data/coops.csv').then(data => {
         case 'avg-pay':
           if (nthKeys.includes('College of Social Sciences and Humanities')) {
             dict.Humanities =
-                getAvgOfKey(currentCoop.get('College of Social Sciences and Humanities'), 'pay');
+              getAvgOfKey(currentCoop.get('College of Social Sciences and Humanities'), 'pay');
           } else {
             dict.Humanities = 0;
           }
@@ -656,13 +707,13 @@ d3.csv('data/coops.csv').then(data => {
           }
           if (nthKeys.includes('D\'Amore-McKim School of Business')) {
             dict.Business =
-                getAvgOfKey(currentCoop.get('D\'Amore-McKim School of Business'), 'pay');
+              getAvgOfKey(currentCoop.get('D\'Amore-McKim School of Business'), 'pay');
           } else {
             dict.Business = 0;
           }
           if (nthKeys.includes('Khoury College of Computer Sciences')) {
             dict.Khoury =
-                getAvgOfKey(currentCoop.get('Khoury College of Computer Sciences'), 'pay');
+              getAvgOfKey(currentCoop.get('Khoury College of Computer Sciences'), 'pay');
           } else {
             dict.Khoury = 0;
           }
@@ -670,7 +721,7 @@ d3.csv('data/coops.csv').then(data => {
         case 'avg-rate':
           if (nthKeys.includes('College of Social Sciences and Humanities')) {
             dict.Humanities =
-                getAvgOfKey(currentCoop.get('College of Social Sciences and Humanities'), 'rating');
+              getAvgOfKey(currentCoop.get('College of Social Sciences and Humanities'), 'rating');
           } else {
             dict.Humanities = 0;
           }
@@ -686,19 +737,19 @@ d3.csv('data/coops.csv').then(data => {
           }
           if (nthKeys.includes('College of Arts, Media and Design')) {
             dict.Design =
-                getAvgOfKey(currentCoop.get('College of Arts, Media and Design'), 'rating');
+              getAvgOfKey(currentCoop.get('College of Arts, Media and Design'), 'rating');
           } else {
             dict.Design = 0;
           }
           if (nthKeys.includes('D\'Amore-McKim School of Business')) {
             dict.Business =
-                getAvgOfKey(currentCoop.get('D\'Amore-McKim School of Business'), 'rating');
+              getAvgOfKey(currentCoop.get('D\'Amore-McKim School of Business'), 'rating');
           } else {
             dict.Business = 0;
           }
           if (nthKeys.includes('Khoury College of Computer Sciences')) {
             dict.Khoury =
-                getAvgOfKey(currentCoop.get('Khoury College of Computer Sciences'), 'rating');
+              getAvgOfKey(currentCoop.get('Khoury College of Computer Sciences'), 'rating');
           } else {
             dict.Khoury = 0;
           }
@@ -706,7 +757,7 @@ d3.csv('data/coops.csv').then(data => {
         default:
           if (nthKeys.includes('College of Social Sciences and Humanities')) {
             dict.Humanities =
-                currentCoop.get('College of Social Sciences and Humanities').length;
+              currentCoop.get('College of Social Sciences and Humanities').length;
           } else {
             dict.Humanities = 0;
           }
@@ -738,51 +789,51 @@ d3.csv('data/coops.csv').then(data => {
       }
 
       dict.total =
-          dict.Humanities + dict.Engineering + dict.Science +
-          dict.Design +
-          dict.Business + dict.Khoury;
+        dict.Humanities + dict.Engineering + dict.Science +
+        dict.Design +
+        dict.Business + dict.Khoury;
       college_d.push(dict);
     }
 
-    const keys_college = [ 'Humanities', 'Engineering', 'Science',
-      'Design', 'Business', 'Khoury' ];
+    const keys_college = ['Humanities', 'Engineering', 'Science',
+      'Design', 'Business', 'Khoury'];
 
     college_d.sort(function (a, b) { return b.total - a.total; });
     x_college.domain(college_d.map(function (d) { return d.Coop; }));
-    y_college.domain([ 0, d3.max(college_d, function (d) {
-      let vals = [ d.Humanities, d.Engineering, d.Science, d.Design, d.Business, d.Khoury ];
+    y_college.domain([0, d3.max(college_d, function (d) {
+      let vals = [d.Humanities, d.Engineering, d.Science, d.Design, d.Business, d.Khoury];
       return d3.max(vals);
-    }) ]);
+    })]);
     z_college.domain(keys_college);
 
-    const xSubgroup = d3.scaleBand().domain(keys_college).range([ 0, x_college.bandwidth() ])
-        .padding([ 0.05 ]);
+    const xSubgroup = d3.scaleBand().domain(keys_college).range([0, x_college.bandwidth()])
+      .padding([0.05]);
 
     g_college.append('g')
-        .selectAll('g')
-        .data(college_d)
-        .enter().append('g')
-        .attr('transform', function (d) { return 'translate(' + x_college(d.Coop) + ',0)'; })
-        .selectAll('rect')
-        .data(function (d) {
-          return keys_college.map(function (key) { return { key: key, value: d[key] }; });
-        })
-        .enter().append('rect')
-        .attr('x', function (d) { return xSubgroup(d.key); })
-        .attr('y', function (d) { return y_college(d.value); })
-        .attr('width', xSubgroup.bandwidth())
-        .attr('height', function (d) { return HEIGHT - y_college(d.value); })
-        .attr('fill', function (d) { return z_college(d.key); })
-        .style('cursor', 'pointer');
+      .selectAll('g')
+      .data(college_d)
+      .enter().append('g')
+      .attr('transform', function (d) { return 'translate(' + x_college(d.Coop) + ',0)'; })
+      .selectAll('rect')
+      .data(function (d) {
+        return keys_college.map(function (key) { return { key: key, value: d[key] }; });
+      })
+      .enter().append('rect')
+      .attr('x', function (d) { return xSubgroup(d.key); })
+      .attr('y', function (d) { return y_college(d.value); })
+      .attr('width', xSubgroup.bandwidth())
+      .attr('height', function (d) { return HEIGHT - y_college(d.value); })
+      .attr('fill', function (d) { return z_college(d.key); })
+      .style('cursor', 'pointer');
 
     g_college.append('g')
-        .attr('class', 'axis')
-        .attr('transform', 'translate(0,0)')
-        .call(d3.axisLeft(y_college));
+      .attr('class', 'axis')
+      .attr('transform', 'translate(0,0)')
+      .call(d3.axisLeft(y_college));
 
     g_college.append('g')
-        .attr('transform', 'translate(0,' + HEIGHT + ')')
-        .call(d3.axisBottom(x_college).tickSize(0));
+      .attr('transform', 'translate(0,' + HEIGHT + ')')
+      .call(d3.axisBottom(x_college).tickSize(0));
 
     g_college.selectAll('rect').each(function (d, i) {
       d3.select(this).on('mousemove', () => {
@@ -791,14 +842,14 @@ d3.csv('data/coops.csv').then(data => {
         HighlightCircle(d, college_d[nth].Coop);
         d3.select(this).attr('stroke', 'black').attr('stroke-width', 1.5);
       })
-          .on('mouseleave', function () {
-            d3.selectAll('rect')
-                .attr('stroke-width', 0);
+        .on('mouseleave', function () {
+          d3.selectAll('rect')
+            .attr('stroke-width', 0);
 
-            d3.selectAll('circle')
-                .attr('stroke', 'black')
-                .attr('stroke-width', '1px');
-          });
+          d3.selectAll('circle')
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1px');
+        });
     });
 
     function HighlightCircle(data, nth) {
@@ -811,25 +862,25 @@ d3.csv('data/coops.csv').then(data => {
     }
 
     const legend_college = g_college.append('g')
-        .attr('font-family', 'sans-serif')
-        .attr('font-size', 10)
-        .attr('text-anchor', 'end')
-        .selectAll('g')
-        .data(keys_college.slice().reverse())
-        .enter().append('g')
-        .attr('transform', function (d, i) { return 'translate(-0,' + (100 + i * 20) + ')'; });
+      .attr('font-family', 'sans-serif')
+      .attr('font-size', 10)
+      .attr('text-anchor', 'end')
+      .selectAll('g')
+      .data(keys_college.slice().reverse())
+      .enter().append('g')
+      .attr('transform', function (d, i) { return 'translate(-0,' + (100 + i * 20) + ')'; });
 
     legend_college.append('rect')
-        .attr('x', WIDTH - 19)
-        .attr('width', 19)
-        .attr('height', 19)
-        .attr('fill', z_college);
+      .attr('x', WIDTH - 19)
+      .attr('width', 19)
+      .attr('height', 19)
+      .attr('fill', z_college);
 
     legend_college.append('text')
-        .attr('x', WIDTH - 24)
-        .attr('y', 9.5)
-        .attr('dy', '0.32em')
-        .text(function (d) { return d; });
+      .attr('x', WIDTH - 24)
+      .attr('y', 9.5)
+      .attr('dy', '0.32em')
+      .text(function (d) { return d; });
 
   };
 
