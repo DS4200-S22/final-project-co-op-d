@@ -562,8 +562,6 @@ d3.csv('data/coops.csv').then(data => {
 
     g_loc.selectAll('rect').each(function (d) {
       d3.select(this).on('mousemove', () => {
-        //console.log(d);
-        // console.log(d[1]);
         let coopnum = d[1] - d[0];
         if (coopnum === d.data.First) {
           HighlightCompany(d.data, 1);
