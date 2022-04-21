@@ -586,7 +586,7 @@ d3.csv('data/coops.csv').then(data => {
 
     function HighlightCompany(data, coop) {
       d3.selectAll('circle').each(function (d) {
-        if (d[0].state.includes(data.Location) && d[0].nThCoop === coop) {
+        if (d[0].state.includes(data.Location) && d[0].nThCoop.includes(coop)) {
           d3.select(this).attr('stroke', 'red').attr('stroke-width', 2);
 
         }
