@@ -43,13 +43,7 @@
     <h1>Abstract</h1>
 
     <p>
-        This visualization will provide Northeastern University’s students with insightful
-        statistics on the co-op program. Co-ops are the heart of every Husky, but Northeastern does
-        not provide any tools to facilitate co-op exploration and transparency. With this tool,
-        students will be able to better understand compensation distributions and see transparent
-        ratings for co-ops. This allows students to not only explore co-ops, but also assist them in
-        making an informed decision in this big career milestone. <strong>Be sure to delete this
-        filler text before your final submission!</strong>
+        The motivation behind this visualization tool is to provide Northeastern University’s students with insightful statistics on the co-op program. Co-ops are the heart of every Husky, but Northeastern does not currently offer any tools to facilitate co-op exploration and provide transparency about companies. With this tool, students will better understand compensation distributions and see transparent ratings for co-ops based on the experiences of past Northeastern students. No matter what stage of the co-op process one is in, whether it be first-year students still figuring out their majors, second years who are just starting their co-op search, or even upper-classmen who have already been on co-op, this visualization allows everyone to explore co-ops and make an informed decision in this big career milestone. 
     </p>
 </div>
 
@@ -142,49 +136,69 @@
 
     <h1>Demo Video</h1>
 
-    <p>
-        Embed an MP4 demo video using the HTML5 &lt;video&gt; tag. For example, below is a screen
-        recording Prof. Cody Dunne made of Mike Bostock's flexible transitions in D3. <strong>Be
-        sure to delete this filler text before your final submission!</strong>
-    </p>
 
     <video controls width='100%'>
-        <source src='https://www.ccs.neu.edu/home/cody/courses/shared/d3-flexible-transitions.mp4'
+        <source src="files/CoOp'd Demo.mp4"
                 type='video/mp4'>
+        <track src="files/captions.vtt" label="English" kind="subtitles" srclang="en-us" default >
         <p>Your browser doesn't support HTML5 video. Here is
             a
-            <a href='https://www.ccs.neu.edu/home/cody/courses/shared/d3-flexible-transitions.mp4'>link
+            <a href='https://www.youtube.com/watch?v=72KWWIcKNYI'>link
                 to the video</a> instead.</p>
     </video>
 
     <h1>Visualization Explanation</h1>
 
     <p>
-        Replace with an explanation of your visualization and linked presentation slides. <strong>Be
-        sure to delete this filler text before your final submission!</strong>
+        The purpose of this visualization is to allow students to easily find co-ops that align with their values and interests. To do this effectively, the final visualization tool is composed of two main sections. The first section is company-centric with three different visualizations. The main visualization is a zoomable scatterplot that plots companies on axes for their average pay and average rating. Two smaller distribution bar graphs show the distribution for the pay and rating values for either all the companies or the selected companies on the scatterplot. 
+
+    </p>
+
+    <p>
+
+        The second section of the visualization contains two other graphs. The data shown on these graphs are dependent on a drop-down menu within the container, which includes the number of co-ops, average pay, and average rating. The first graph is a stacked bar graph. Each bar represents a location, and each bar is sectioned into areas that represent the nTh-Coop. The width of these areas is dependent on the feature selected in the drop-down menu. The second graph is a grouped bar graph, with each section of bars representing the nTh-Coop, and each bar representing a college. The height of the bars is dependent on the feature selected in the drop-down menu.
+    </p>
+    <p>
+
+        Interactions that the visualization can facilitate include selecting companies on the scatterplot. Doing so will change the pay and rating distribution graphs accordingly to display data for the selected company. It will also change the data shown in the graphs second section of the visualization, such that only the company data will be shown. Another interaction that is facilitated by the visualization is the selection of a bar in either the location graph or nth-coop graph. Doing so will highlight the corresponding companies on the zoomable scatterplot. For further filtration of the scatterplot, the student can also use the filters on the top of the page to filter the company scatterplot by any combination of location, college, and nth-coop. 
+
+    </p>
+    <p>
+
+        The placement of the graphs within the visualization allows for intuitive use by users with some visualization experience. The grouping of the graphs and the discoverability of the filtration options all contribute to the easy understanding and usage of the visualization overall.
+    </p>
+    <p>
+
+        Overall, the visualization allows for filtration and exploration of co-op data, which can help our target users. The visualization will allow users to compare different companies by average ratings and compensation, using college, nTh-Coop, and location as additional criteria to summarize the data. It also helps users discover different co-ops that their peers have done in the past to evaluate all their options, to make an informed decision.
+    </p>
+    <p>
+
+    <li>
+        Please find our presentation slides linked
+        <a
+          href="https://docs.google.com/presentation/d/1HTUj6FvfLgDlU31QFt0e6UjnZwwHuUnApIlWrHvynhk/edit?usp=sharing">here</a>
+      </li>
+
+      <li>
+        Please find our research paper linked
+        <a href='files/CoOp_d.pdf'> here</a>
+      </li>
     </p>
 
     <h1>Acknowledgments</h1>
 
-    <p>
-        Add to think list citations for any code, packages/libraries, text, images, designs, etc.
-        that you leveraged. <strong>Be sure to delete this filler text before your final
-        submission!</strong>
-    </p>
-
     <ul>
-        <li><a href='https://d3js.org/'>
-            D3: Data-Driven Documents</a>
-            by Mike Bostock is used for manipulating the DOM to create visualizations.
+        <li><a href='https://d3-graph-gallery.com/graph/interactivity_zoom.html'>
+            Zooming in D3.js </a>
+            by Yan Holtz is used for zooming in the scatterplot.
         </li>
-        <li><a href='https://codepo8.github.io/css-fork-on-github-ribbon/#'>
-            Pure CSS responsive 'Fork me on GitHub' ribbon</a>
-            by Chris Heilmann is used to create the banner that links back to the source code
-            repository.
+        <li><a href='https://bl.ocks.org/Andrew-Reid/0aedd5f3fb8b099e3e10690bd38bd458'>
+            Horizontal Stacked Bar Chart</a>
+            by Andrew Reid is used to create the stacked bar graph for location. 
         </li>
-        <li><a href='https://github.com/NEU-DS-4200-F20-Staff/Project'>
-            Project</a>
-            by Cody Dunne is used to create this assignment.
+        <li><a href='https://d3-graph-gallery.com/graph/line_select.html '>
+            Line plot with dropdown to select group in d3.js</a>
+            by Yan Holtz is used to create a dropdown that changes the bar graphs based on the selected criteria. 
         </li>
     </ul>
 </div>
